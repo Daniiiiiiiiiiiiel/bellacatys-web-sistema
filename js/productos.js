@@ -114,7 +114,7 @@ function renderizarProductos(productos, reiniciar = false) {
         paginaActual = 0;
     }
 
-    countElement.textContent = productos.length + 1;
+    countElement.textContent = productos.length;
 
     // Limpiar contenedor siempre (solo mostramos productos de la página actual)
     contenedor.innerHTML = '';
