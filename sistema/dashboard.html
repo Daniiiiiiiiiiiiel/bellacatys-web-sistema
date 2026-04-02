@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Bella Catys Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2 class="italic">Bella Catys</h2>
+            <p>Admin Panel</p>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="#"><i class="fas fa-box-open"></i> Inventario</a></li>
+                <li><a href="#" id="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="topbar">
+            <div class="menu-toggle"><i class="fas fa-bars"></i></div>
+            <div class="user-info">
+                <span id="user-display">Cargando...</span>
+                <div class="avatar"><i class="fas fa-user-circle"></i></div>
+            </div>
+        </header>
+
+        <section class="content-area">
+            <div class="content-header">
+                <div>
+                    <h1>Gestión de Productos</h1>
+                    <p>Administra el catálogo completo que se muestra en la web.</p>
+                </div>
+                <button class="btn-primary" id="btn-new-product">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </button>
+            </div>
+
+            <div class="toolbar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="admin-search" placeholder="Buscar por nombre, marca o categoría...">
+                </div>
+                <div class="filter-box">
+                    <select id="admin-filter">
+                        <option value="todos">Todas las categorías</option>
+                        <option value="cabello">Cabello</option>
+                        <option value="skincare">Skincare</option>
+                        <option value="maquillaje">Maquillaje</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Table -->
+            <div class="table-container">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody">
+                        <tr><td colspan="6" style="text-align:center;">Cargando productos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Product Modal (Create/Edit) -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content admin-modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Nuevo Producto</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-grid">
+                    <div class="form-group row-span">
+                        <label>Imagen del Producto</label>
+                        <div class="image-upload-wrapper">
+                            <img id="image-preview" src="" alt="Preview" style="display:none;">
+                            <div class="upload-placeholder" id="upload-placeholder">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Haz clic o arrastra para subir una imagen</p>
+                            </div>
+                            <input type="file" id="image-upload" accept="image/*" style="opacity:0; position:absolute; inset:0; cursor:pointer; width:100%; height:100%;">
+                        </div>
+                        <input type="text" id="product-imagen" placeholder="URL de la imagen (o usa el botón de subir arriba)" readonly>
+                        <p class="help-text">La imagen se subirá automáticamente a Supabase Storage.</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-nombre">Nombre <span class="required">*</span></label>
+                        <input type="text" id="product-nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-marca">Marca</label>
+                        <input type="text" id="product-marca">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-categoria">Categoría <span class="required">*</span></label>
+                        <select id="product-categoria" required>
+                            <option value="cabello">Cabello</option>
+                            <option value="skincare">Skincare</option>
+                            <option value="maquillaje">Maquillaje</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="product-precio">Precio <span class="required">*</span></label>
+                        <input type="text" id="product-precio" placeholder="Ej: ₡8500" required>
+                    </div>
+
+                    <div class="form-group col-span-2">
+                        <label for="product-descripcion">Descripción</label>
+                        <textarea id="product-descripcion" rows="4"></textarea>
+                    </div>
+
+                    <div class="form-group col-span-2">
+                        <label>Características (lista)</label>
+                        <div id="caracteristicas-container">
+                            <!-- Dynamic inputs go here -->
+                        </div>
+                        <button type="button" class="btn-secondary btn-sm mt-2" id="btn-add-caract">
+                            <i class="fas fa-plus"></i> Agregar Característica
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary close-modal-btn">Cancelar</button>
+                    <button type="submit" class="btn-primary" id="btn-save-product">
+                        <i class="fas fa-save"></i> Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Confirm Delete Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-icon"><i class="fas fa-exclamation-triangle"></i></div>
+            <h2>¿Eliminar Producto?</h2>
+            <p>Esta acción no se puede deshacer. ¿Estás seguro de que deseas eliminar este producto permanentemente?</p>
+            <div class="modal-actions">
+                <button type="button" class="btn-secondary" id="btn-cancel-delete">Cancelar</button>
+                <button type="button" class="btn-danger" id="btn-confirm-delete">Sí, Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/products.js"></script>
+</body>
+</html>
