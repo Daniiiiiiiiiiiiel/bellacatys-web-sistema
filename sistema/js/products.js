@@ -1,584 +1,262 @@
-// Fuente de datos: API en vez de data.js estático
-let productosDB = [];
+let allProducts = [];
+let editingId = null;
 
-async function cargarProductos() {
+document.addEventListener('DOMContentLoaded', () => {
+    loadProducts();
+    setupEventListeners();
+});
+
+async function loadProducts() {
     try {
         const res = await fetch('/api/productos');
-        if (!res.ok) throw new Error('Error al cargar productos');
-        productosDB = await res.json();
-        productosFiltrados = [...productosDB];
+        if (res.status === 401) {
+            window.location.href = '/';
+            return;
+        }
+        allProducts = await res.json();
+        renderProducts(allProducts);
     } catch (e) {
-        console.error('No se pudieron cargar productos desde la API:', e);
-        productosDB = [];
-        productosFiltrados = [];
+        console.error('Error loading products:', e);
+        document.getElementById('products-tbody').innerHTML = '<tr><td colspan="6">Error al cargar productos</td></tr>';
     }
 }
 
-// ========================================
-// LOADING SCREEN LOGIC
-// ========================================
-
-// Function to preload a single resource
-function preloadResource(resource) {
-    return new Promise((resolve, reject) => {
-        if (resource.type === 'image') {
-            const img = new Image();
-            img.onload = () => resolve();
-            img.onerror = () => resolve(); // Resolve anyway to not block loading
-            img.src = resource.src;
-        }
-    });
-}
-
-// Main loading function
-async function initLoadingScreen() {
-    const loadingScreen = document.getElementById('loading-screen');
-
-    if (!loadingScreen) return;
-
-    // Get resources to preload
-    const resources = [];
-
-    // Add logo
-    resources.push({ type: 'image', src: '../img/inicio/bellacatys.png' });
-
-    // Add first 6 product images
-    const firstProducts = productosDB.slice(0, 6);
-    firstProducts.forEach(producto => {
-        if (producto.imagen) {
-            resources.push({ type: 'image', src: producto.imagen });
-        }
-    });
-
-    // Preload all resources
-    const preloadPromises = resources.map(resource => preloadResource(resource));
-
-    // Wait for all resources or timeout after 3 seconds
-    const timeoutPromise = new Promise(resolve => setTimeout(resolve, 3000));
-
-    await Promise.race([
-        Promise.all(preloadPromises),
-        timeoutPromise
-    ]);
-
-    // Wait a bit before hiding
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // Hide loading screen
-    loadingScreen.classList.add('hidden');
-
-    // Remove from DOM after transition
-    setTimeout(() => {
-        if (loadingScreen.parentNode) {
-            loadingScreen.remove();
-        }
-    }, 1000);
-}
-
-// Start loading when DOM is ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initLoadingScreen);
-} else {
-    initLoadingScreen();
-}
-
-// Variables globales
-let productosFiltrados = [];
-let paginaActual = 0;
-const PRODUCTOS_POR_PAGINA = 10;
-
-// Inicialización — espera a que la API responda antes de renderizar
-document.addEventListener('DOMContentLoaded', async function () {
-    await cargarProductos();
-    inicializarApp();
-});
-
-function inicializarApp() {
-    renderizarProductos(productosDB, true);
-    configurarFiltros();
-    configurarBusqueda();
-    configurarMenuMobile();
-    configurarNewsletter();
-    configurarModal();
-    configurarBotonesComprar();
-    checkURLParams();
-}
-
-// Renderizar productos
-function renderizarProductos(productos, reiniciar = false) {
-    const contenedor = document.getElementById('productos-lista');
-    const countElement = document.getElementById('count');
-
-    // Si es reinicio, resetear la página actual
-    if (reiniciar) {
-        paginaActual = 0;
-    }
-
-    countElement.textContent = productos.length;
-
-    // Limpiar contenedor siempre (solo mostramos productos de la página actual)
-    contenedor.innerHTML = '';
-
-    if (productos.length === 0) {
-        contenedor.innerHTML = `
-            <div class="no-resultados">
-                <i class="fas fa-search"></i>
-                <h3>No se encontraron productos</h3>
-                <p>Intenta ajustar los filtros de búsqueda</p>
-            </div>
-        `;
-        // Eliminar controles de navegación si existen
-        const controlesExistentes = document.getElementById('controles-paginacion');
-        if (controlesExistentes) {
-            controlesExistentes.remove();
-        }
+function renderProducts(products) {
+    const tbody = document.getElementById('products-tbody');
+    if (products.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; padding: 3rem 0;">
+                    <div style="color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p style="font-size: 1.1rem;">No se encontraron productos en esta categoría</p>
+                    </div>
+                </td>
+            </tr>`;
         return;
     }
 
-    // Calcular qué productos mostrar de la página actual
-    const inicio = paginaActual * PRODUCTOS_POR_PAGINA;
-    const fin = Math.min(inicio + PRODUCTOS_POR_PAGINA, productos.length);
-    const productosAMostrar = productos.slice(inicio, fin);
-
-    // Renderizar productos de la página actual
-    const productosHTML = productosAMostrar.map(producto => {
-        // Determinar nombre de categoría
-        let nombreCategoria = 'Producto';
-        if (producto.categoria === 'maquillaje') nombreCategoria = 'Maquillaje';
-        else if (producto.categoria === 'skincare') nombreCategoria = 'Skincare';
-        else if (producto.categoria === 'cabello') nombreCategoria = 'Cabello';
-
-        return `
-        <div class="producto-card" data-id="${producto.id}" data-categoria="${producto.categoria}">
-            <div class="producto-info-detalle" style="min-width: 0; overflow: hidden;">
-                <div>
-                    <span class="producto-categoria">${nombreCategoria}</span>
-                    <div class="producto-header-flex">
-                        <div class="producto-identidad">
-                            <span class="producto-marca">${producto.marca || ''}</span>
-                            <h2 class="producto-titulo">${producto.nombre}</h2>
-                        </div>
-                        <div class="producto-precio-box">
-                            <h1 class="producto-precio">₡${Number(producto.price).toLocaleString('es-CR')}</h1>
-                        </div>
-                    </div>
-
-                    <div class="producto-descripcion">
-                        <h3>Descripción</h3>
-                        <p style="word-break: break-word; overflow-wrap: break-word;">${producto.descripcion ? (String(producto.descripcion).length > 120 ? String(producto.descripcion).substring(0, 120) + '...' : producto.descripcion) : 'Sin descripción'}</p>
-                    </div>
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bella-catys.vercel.app';
+    tbody.innerHTML = products.map(p => `
+        <tr>
+            <td class="prod-img-cell" data-label="Imagen">
+                <img src="${p.imagen ? (p.imagen.startsWith('/') ? baseUrl + p.imagen : p.imagen) : 'https://via.placeholder.com/50'}" alt="${p.nombre}">
+            </td>
+            <td data-label="Nombre"><strong>${p.nombre}</strong></td>
+            <td data-label="Marca">${p.marca}</td>
+            <td data-label="Categoría"><span class="badge ${p.categoria}">${p.categoria}</span></td>
+            <td data-label="Precio">${p.price}</td>
+            <td data-label="Acciones">
+                <div class="action-btns">
+                    <button class="btn-icon btn-edit" onclick="editProduct(${p.id})"><i class="fas fa-edit"></i></button>
+                    <button class="btn-icon btn-delete" onclick="confirmDelete(${p.id})"><i class="fas fa-trash"></i></button>
                 </div>
-                
-                <div class="producto-acciones">
-                    <button class="btn-ver-mas" data-id="${producto.id}">
-                        <i class="fas fa-info-circle"></i> detalles
-                    </button>
-                    <button class="btn-ver-mas pedir btn-comprar-2" data-id="${producto.id}">
-                        <i class="fas fa-shopping-cart"></i> Pedir
-                    </button>
-                </div>
-            </div>
-            
-            <div class="producto-imagen-container">
-                <div class="producto-imagen-wrapper">
-                    <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
-                </div>
-            </div>
-        </div>
-        `;
-    }).join('');
+            </td>
+        </tr>
+    `).join('');
+}
 
-    contenedor.innerHTML = productosHTML;
+function setupEventListeners() {
+    // Menu mobile
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.querySelector('.menu-toggle');
 
-    // Gestionar controles de navegación
-    gestionarControlesPaginacion(productos);
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
 
-    // Agregar eventos a botones "Ver más"
-    document.querySelectorAll('.btn-ver-mas:not(.btn-comprar-2)').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const id = parseInt(this.dataset.id);
-            mostrarDetalleProducto(id);
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
+    });
+
+    // Search and Filter
+    document.getElementById('admin-search').addEventListener('input', filterProducts);
+    document.getElementById('admin-filter').addEventListener('change', filterProducts);
+
+    // Modals
+    document.getElementById('btn-new-product').addEventListener('click', () => {
+        editingId = null;
+        document.getElementById('product-form').reset();
+        document.getElementById('modal-title').textContent = 'Nuevo Producto';
+        document.getElementById('caracteristicas-container').innerHTML = '';
+        document.getElementById('image-preview').style.display = 'none';
+        document.getElementById('upload-placeholder').style.display = 'block';
+        document.getElementById('product-modal').style.display = 'flex';
+    });
+
+    document.querySelectorAll('.close-modal, .close-modal-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('product-modal').style.display = 'none';
+            document.getElementById('delete-modal').style.display = 'none';
         });
     });
 
-    // Agregar eventos a botones "Pedir" (btn-comprar-2)
-    document.querySelectorAll('.btn-comprar-2').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const id = parseInt(this.dataset.id);
-            const producto = productosDB.find(p => p.id === id);
-            if (producto) {
-                enviarMensajeWhatsApp(producto);
+    // Dynamic characteristics
+    document.getElementById('btn-add-caract').addEventListener('click', () => {
+        addCaracteristicaInput('');
+    });
+
+    // Image Upload Proxy
+    const imageUpload = document.getElementById('image-upload');
+    const imageUrlInput = document.getElementById('product-imagen');
+    const imagePreview = document.getElementById('image-preview');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+
+    imageUpload.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        uploadPlaceholder.innerHTML = '<i class="fas fa-spinner fa-spin"></i><p>Subiendo imagen...</p>';
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+
+            if (data.ok) {
+                imageUrlInput.value = data.url;
+                imagePreview.src = data.url;
+                imagePreview.style.display = 'block';
+                uploadPlaceholder.style.display = 'none';
+            } else {
+                alert('Error al subir: ' + data.error);
+                uploadPlaceholder.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Haz clic o arrastra para subir una imagen</p>';
             }
-        });
+        } catch (e) {
+            alert('Error de conexión al subir la imagen.');
+            uploadPlaceholder.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Haz clic o arrastra para subir una imagen</p>';
+        }
     });
 
-    // Animación de entrada
-    animarProductos();
+    // Form submit
+    document.getElementById('product-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-    // Scroll al inicio del catálogo
-    const catalogoMain = document.querySelector('.catalogo-main');
-    if (catalogoMain && !reiniciar) {
-        catalogoMain.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-}
+        const caracteristicas = Array.from(document.querySelectorAll('.caract-input'))
+            .map(input => input.value.trim())
+            .filter(val => val !== '');
 
-// Función para enviar mensaje de WhatsApp
-function enviarMensajeWhatsApp(producto) {
-    // Determinar nombre de categoría
-    let nombreCategoria = 'Producto';
-    if (producto.categoria === 'maquillaje') nombreCategoria = 'Maquillaje';
-    else if (producto.categoria === 'skincare') nombreCategoria = 'Skincare';
-    else if (producto.categoria === 'cabello') nombreCategoria = 'Cabello';
-
-    const numero = '50689523778';
-    const mensaje = encodeURIComponent(
-        `¡Hola! Estoy interesado en el siguiente producto:\n\n` +
-        `📦 *${producto.nombre}*\n` +
-        `🏷️ Marca: ${producto.marca}\n` +
-        `📂 Categoría: ${nombreCategoria}\n` +
-        `💰 Precio: ${producto.price}\n\n` +
-        `¿Me podrías dar más información? 😊`
-    );
-    const url = `https://wa.me/${numero}?text=${mensaje}`;
-    window.open(url, '_blank');
-}
-
-// Configurar botones de comprar
-function configurarBotonesComprar() {
-    // Configurar el botón de comprar del modal
-    const btnComprarModal = document.getElementById('btn-comprar');
-    if (btnComprarModal) {
-        // Esta función se actualizará cuando se abra el modal
-        btnComprarModal.onclick = function () {
-            // La funcionalidad se configura en mostrarDetalleProducto()
+        const productData = {
+            nombre: document.getElementById('product-nombre').value,
+            marca: document.getElementById('product-marca').value,
+            categoria: document.getElementById('product-categoria').value,
+            descripcion: document.getElementById('product-descripcion').value,
+            price: document.getElementById('product-precio').value,
+            imagen: document.getElementById('product-imagen').value,
+            caracteristicas
         };
-    }
-}
 
-// Gestionar controles de paginación
-function gestionarControlesPaginacion(productos) {
-    const totalPaginas = Math.ceil(productos.length / PRODUCTOS_POR_PAGINA);
+        const method = editingId ? 'PUT' : 'POST';
+        const url = editingId ? `/api/productos/${editingId}` : '/api/productos';
 
-    // Si solo hay una página, no mostrar controles
-    if (totalPaginas <= 1) {
-        const controlesExistentes = document.getElementById('controles-paginacion');
-        if (controlesExistentes) {
-            controlesExistentes.remove();
-        }
-        return;
-    }
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productData)
+            });
 
-    // Buscar si ya existen los controles
-    let controles = document.getElementById('controles-paginacion');
-
-    // Si no existen, crearlos
-    if (!controles) {
-        const contenedorCatalogo = document.querySelector('.catalogo-main');
-        controles = document.createElement('div');
-        controles.id = 'controles-paginacion';
-        controles.className = 'controles-paginacion';
-        contenedorCatalogo.appendChild(controles);
-    }
-
-    // Actualizar contenido de los controles
-    const inicio = paginaActual * PRODUCTOS_POR_PAGINA + 1;
-    const fin = Math.min((paginaActual + 1) * PRODUCTOS_POR_PAGINA, productos.length);
-
-    controles.innerHTML = `
-        <button class="btn-paginacion btn-anterior" ${paginaActual === 0 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i>
-            Anterior
-        </button>
-        
-        <div class="info-paginacion">
-            <span class="pagina-actual">Mostrando ${inicio} - ${fin} de ${productos.length} productos</span>
-            <span class="numero-pagina">Página ${paginaActual + 1} de ${totalPaginas}</span>
-        </div>
-        
-        <button class="btn-paginacion btn-siguiente" ${paginaActual >= totalPaginas - 1 ? 'disabled' : ''}>
-            Siguiente
-            <i class="fas fa-chevron-right"></i>
-        </button>
-    `;
-
-    // Agregar eventos a los botones
-    const btnAnterior = controles.querySelector('.btn-anterior');
-    const btnSiguiente = controles.querySelector('.btn-siguiente');
-
-    btnAnterior.addEventListener('click', function () {
-        if (paginaActual > 0) {
-            paginaActual--;
-            renderizarProductos(productosFiltrados, false);
-        }
-    });
-
-    btnSiguiente.addEventListener('click', function () {
-        if (paginaActual < totalPaginas - 1) {
-            paginaActual++;
-            renderizarProductos(productosFiltrados, false);
-        }
-    });
-}
-
-// Configurar filtros
-function configurarFiltros() {
-    const radios = document.querySelectorAll('input[name="categoria"]');
-
-    radios.forEach(radio => {
-        radio.addEventListener('change', function () {
-            filtrarProductos();
-        });
-    });
-
-    // Botón limpiar filtros
-    document.querySelector('.btn-limpiar-filtros').addEventListener('click', function () {
-        document.querySelector('input[value="todos"]').checked = true;
-        document.getElementById('buscar-producto').value = '';
-        filtrarProductos();
-    });
-}
-
-// Configurar búsqueda
-function configurarBusqueda() {
-    const inputBuscar = document.getElementById('buscar-producto');
-
-    inputBuscar.addEventListener('input', function () {
-        filtrarProductos();
-    });
-}
-
-// Filtrar productos
-function filtrarProductos() {
-    const categoriaSeleccionada = document.querySelector('input[name="categoria"]:checked').value;
-    const textoBusqueda = document.getElementById('buscar-producto').value.toLowerCase();
-
-    let productos = [...productosDB];
-
-    // Filtrar por categoría
-    if (categoriaSeleccionada !== 'todos') {
-        productos = productos.filter(p => p.categoria === categoriaSeleccionada);
-    }
-
-    // Filtrar por búsqueda (incluye nombre, marca y descripción)
-    if (textoBusqueda) {
-        productos = productos.filter(p =>
-            p.nombre.toLowerCase().includes(textoBusqueda) ||
-            p.marca.toLowerCase().includes(textoBusqueda) ||
-            p.descripcion.toLowerCase().includes(textoBusqueda)
-        );
-    }
-
-    productosFiltrados = productos;
-    renderizarProductos(productos, true);
-}
-
-// Mostrar mensaje "Próximamente" para perfumes
-function mostrarMensajeProximamente() {
-    const contenedor = document.getElementById('productos-lista');
-    const countElement = document.getElementById('count');
-
-    // Actualizar contador
-    countElement.textContent = '0';
-
-    // Mostrar mensaje de próximamente
-    contenedor.innerHTML = `
-        <div class="no-resultados proximamente">
-            <i class="fas fa-clock"></i>
-            <h3>Próximamente</h3>
-            <p>Estamos trabajando en nuestra línea de perfumes. ¡Muy pronto disponible!</p>
-        </div>
-    `;
-
-    // Eliminar controles de navegación si existen
-    const controlesExistentes = document.getElementById('controles-paginacion');
-    if (controlesExistentes) {
-        controlesExistentes.remove();
-    }
-}
-
-// Configurar modal
-function configurarModal() {
-    const modal = document.getElementById('modal-producto');
-    const btnCerrar = document.querySelector('.modal-cerrar');
-
-    // Cerrar modal al hacer clic en la X
-    btnCerrar.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-
-    // Cerrar modal al hacer clic fuera del contenido
-    window.addEventListener('click', function (event) {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    // Cerrar modal con tecla ESC
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            modal.style.display = 'none';
-        }
-    });
-}
-
-// Mostrar detalle del producto en modal
-function mostrarDetalleProducto(id) {
-    const producto = productosDB.find(p => p.id === id);
-    if (producto) {
-        // Determinar nombre de categoría
-        let nombreCategoria = 'Producto';
-        if (producto.categoria === 'maquillaje') nombreCategoria = 'Maquillaje';
-        else if (producto.categoria === 'skincare') nombreCategoria = 'Skincare';
-        else if (producto.categoria === 'cabello') nombreCategoria = 'Cabello';
-
-        // Actualizar contenido del modal
-        document.getElementById('modal-imagen').src = producto.imagen;
-        document.getElementById('modal-imagen').alt = producto.nombre;
-        document.getElementById('modal-categoria').textContent = nombreCategoria;
-        document.getElementById('modal-titulo').textContent = producto.nombre;
-        document.getElementById('modal-precio').textContent = producto.price;
-        document.getElementById('modal-marca').textContent = producto.marca;
-        document.getElementById('modal-descripcion').textContent = producto.descripcion;
-
-        // Actualizar características
-        const caracteristicasContainer = document.getElementById('modal-caracteristicas');
-        caracteristicasContainer.innerHTML = producto.caracteristicas.map(caract => `
-            <div class="caracteristica-item">
-                <i class="fas fa-check-circle"></i>
-                <span>${caract}</span>
-            </div>
-        `).join('');
-
-        // Configurar botón de comprar del modal con el producto actual
-        const btnComprarModal = document.getElementById('btn-comprar');
-        if (btnComprarModal) {
-            btnComprarModal.onclick = function () {
-                enviarMensajeWhatsApp(producto);
-            };
-        }
-
-        // Configurar botón de cerrar usando la CLASE
-        const btnCerrar = document.querySelector('.modal-cerrar');
-        if (btnCerrar) {
-            btnCerrar.onclick = function () {
-                document.getElementById('modal-producto').style.display = 'none';
-            };
-        }
-
-        // Mostrar modal
-        document.getElementById('modal-producto').style.display = 'block';
-    }
-}
-
-// Función para cerrar el modal
-function cerrarModal() {
-    document.getElementById('modal-producto').style.display = 'none';
-}
-
-// Agregar evento al botón de cerrar
-document.getElementById('modal-cerrar').addEventListener('click', cerrarModal);
-
-// Opcional: Cerrar modal al hacer clic fuera de él
-document.getElementById('modal-producto').addEventListener('click', function (e) {
-    if (e.target === this) {
-        cerrarModal();
-    }
-});
-
-// Animación de productos
-function animarProductos() {
-    const productos = document.querySelectorAll('.producto-card');
-
-    productos.forEach((producto, index) => {
-        producto.style.opacity = '0';
-        producto.style.transform = 'translateY(30px)';
-
-        setTimeout(() => {
-            producto.style.transition = 'opacity 0.6s, transform 0.6s';
-            producto.style.opacity = '1';
-            producto.style.transform = 'translateY(0)';
-        }, index * 100);
-    });
-}
-
-// Menú móvil
-function configurarMenuMobile() {
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const navMenu = document.querySelector('nav ul');
-
-    if (mobileMenu) {
-        mobileMenu.addEventListener('click', function () {
-            navMenu.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-        });
-    }
-
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return;
-
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                navMenu.classList.remove('active');
-                mobileMenu.classList.remove('active');
-
-                window.scrollTo({
-                    top: targetElement.offsetTop - 80,
-                    behavior: 'smooth'
-                });
+            if (res.ok) {
+                document.getElementById('product-modal').style.display = 'none';
+                loadProducts();
+            } else {
+                const error = await res.json();
+                alert('Error: ' + error.error);
             }
-        });
+        } catch (e) {
+            alert('Error de red al guardar.');
+        }
+    });
+
+    // Handle delete
+    document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+        if (!editingId) return;
+        try {
+            const res = await fetch(`/api/productos/${editingId}`, { method: 'DELETE' });
+            if (res.ok) {
+                document.getElementById('delete-modal').style.display = 'none';
+                loadProducts();
+            }
+        } catch (e) {
+            alert('Error al eliminar');
+        }
+    });
+
+    document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+        document.getElementById('delete-modal').style.display = 'none';
     });
 }
 
-// Newsletter
-function configurarNewsletter() {
-    const form = document.querySelector('.newsletter-form');
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            alert(`¡Gracias por suscribirte con el email: ${email}!`);
-            this.reset();
-        });
-    }
+function filterProducts() {
+    const search = document.getElementById('admin-search').value.toLowerCase();
+    const category = document.getElementById('admin-filter').value;
+
+    const filtered = allProducts.filter(p => {
+        const matchSearch = p.nombre.toLowerCase().includes(search) ||
+            p.marca.toLowerCase().includes(search);
+        const matchCategory = category === 'todos' || p.categoria === category;
+        return matchSearch && matchCategory;
+    });
+
+    renderProducts(filtered);
 }
 
-// Cambiar estilo del header al hacer scroll
-window.addEventListener('scroll', function () {
-    const header = document.querySelector('header');
-    if (window.scrollY > 100) {
-        header.style.padding = '10px 0';
-        header.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+function addCaracteristicaInput(value = '') {
+    const container = document.getElementById('caracteristicas-container');
+    const div = document.createElement('div');
+    div.className = 'caract-item';
+    div.innerHTML = `
+        <input type="text" class="caract-input" placeholder="Ej: 1000g" value="${value}">
+        <button type="button" class="btn-icon btn-delete"><i class="fas fa-times"></i></button>
+    `;
+    div.querySelector('button').addEventListener('click', () => div.remove());
+    container.appendChild(div);
+}
+
+// Attach to window so onclick works in HTML string
+window.editProduct = (id) => {
+    const p = allProducts.find(prod => prod.id === id);
+    if (!p) return;
+
+    editingId = id;
+    document.getElementById('modal-title').textContent = 'Editar Producto';
+
+    document.getElementById('product-nombre').value = p.nombre;
+    document.getElementById('product-marca').value = p.marca;
+    document.getElementById('product-categoria').value = p.categoria;
+    document.getElementById('product-precio').value = p.price;
+    document.getElementById('product-descripcion').value = p.descripcion;
+    document.getElementById('product-imagen').value = p.imagen;
+
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bella-catys.vercel.app';
+    const imgSrc = p.imagen ? (p.imagen.startsWith('/') ? baseUrl + p.imagen : p.imagen) : '';
+
+    if (imgSrc) {
+        document.getElementById('image-preview').src = imgSrc;
+        document.getElementById('image-preview').style.display = 'block';
+        document.getElementById('upload-placeholder').style.display = 'none';
     } else {
-        header.style.padding = '15px 0';
-        header.style.boxShadow = '0 2px 15px rgba(0, 0, 0, 0.08)';
+        document.getElementById('image-preview').style.display = 'none';
+        document.getElementById('upload-placeholder').style.display = 'block';
     }
-});
 
-// Check for product ID in URL and auto-open modal (Deep linking from blog)
-function checkURLParams() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('id');
-
-    if (productId) {
-        const id = parseInt(productId);
-        const producto = productosDB.find(p => p.id === id);
-
-        if (producto) {
-            // Wait for DOM to be fully ready, then open modal
-            setTimeout(() => {
-                mostrarDetalleProducto(id);
-
-                // Try to scroll to product card if visible in grid
-                const productCard = document.querySelector(`[data-id="${id}"]`);
-                if (productCard) {
-                    productCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 500);
-        }
+    const container = document.getElementById('caracteristicas-container');
+    container.innerHTML = '';
+    if (p.caracteristicas) {
+        p.caracteristicas.forEach(c => addCaracteristicaInput(c));
     }
-}
+
+    document.getElementById('product-modal').style.display = 'flex';
+};
+
+window.confirmDelete = (id) => {
+    editingId = id;
+    document.getElementById('delete-modal').style.display = 'flex';
+};
