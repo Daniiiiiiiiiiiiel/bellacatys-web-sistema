@@ -28,7 +28,7 @@ function renderProducts(products) {
         return;
     }
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema-o1cv.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema.vercel.app';
     tbody.innerHTML = products.map(p => `
         <tr>
             <td class="prod-img-cell" data-label="Imagen">
