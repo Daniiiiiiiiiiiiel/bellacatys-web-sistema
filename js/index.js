@@ -152,17 +152,28 @@ function renderizarProductosPrincipales() {
         const badges = ['Nuevo', 'Más vendido', 'Oferta', ''];
         const badgeAleatorio = badges[Math.floor(Math.random() * badges.length)];
 
+        let precioFormateado = '';
+        if (producto.price !== null && producto.price !== undefined && producto.price !== '') {
+            const precioStr = String(producto.price).replace(/[₡,\s]/g, '');
+            const precioNum = parseFloat(precioStr);
+            precioFormateado = !isNaN(precioNum)
+                ? `₡${precioNum.toLocaleString('es-CR')}`
+                : String(producto.price);
+        }
+
+        const descCorta = producto.descripcion ? producto.descripcion.substring(0, 100) + '...' : '';
+
         const productoHTML = `
             <div class="producto" data-id="${producto.id}">
                
                 <div class="producto-img">
-                    <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
+                    <img src="${producto.imagen || ''}" alt="${producto.nombre || ''}" loading="lazy">
                 </div>
                 <div class="producto-info">
-                    <h3>${producto.marca}</h3>
-                    <p class="producto-desc">${producto.descripcion.substring(0, 100)}...</p>
+                    <h3>${producto.marca || ''}</h3>
+                    <p class="producto-desc">${descCorta}</p>
                     <div class="producto-detalles">
-                        ${producto.price ? `<span class="precio">   ${producto.price.toLocaleString('es-CR')}</span>` : ''}
+                        ${precioFormateado ? `<span class="precio">${precioFormateado}</span>` : ''}
                     </div>
                     <button class="btn-producto">Ver detalles</button>
                 </div>
@@ -198,19 +209,28 @@ function aplicarEventListenersProductos() {
             const producto = productosDB.find(p => p.id === productId);
 
             if (producto) {
+                let precioFormateadoModal = '';
+                if (producto.price !== null && producto.price !== undefined && producto.price !== '') {
+                    const precioStr = String(producto.price).replace(/[₡,\s]/g, '');
+                    const precioNum = parseFloat(precioStr);
+                    precioFormateadoModal = !isNaN(precioNum)
+                        ? `₡${precioNum.toLocaleString('es-CR')}`
+                        : String(producto.price);
+                }
+
                 modalBody.innerHTML = `
                     <div class="modal-producto">
                         <div class="modal-producto-header">
-                            <h2>${producto.nombre}</h2>
-                            ${producto.price ? `<p class="precio-modal">${producto.price.toLocaleString('es-CR')}</p>` : ''}
+                            <h2>${producto.nombre || ''}</h2>
+                            ${precioFormateadoModal ? `<p class="precio-modal">${precioFormateadoModal}</p>` : ''}
                         </div>
                         <div class="modal-producto-content">
                             <div class="modal-producto-img">
-                                <img src="${producto.imagen}" alt="${producto.nombre}">
+                                <img src="${producto.imagen || ''}" alt="${producto.nombre || ''}">
                             </div>
                             <div class="modal-producto-info">
-                                <div class="producto-tipo-badge">${producto.categoria}</div>
-                                <p class="modal-desc">${producto.descripcion}</p>
+                                <div class="producto-tipo-badge">${producto.categoria || ''}</div>
+                                <p class="modal-desc">${producto.descripcion || ''}</p>
                                 
                                 <div class="modal-details">
                                     ${producto.marca ? `
@@ -686,23 +706,37 @@ function mostrarDetalleProducto(id) {
         else if (producto.categoria === 'skincare') nombreCategoria = 'Skincare';
         else if (producto.categoria === 'cabello') nombreCategoria = 'Cabello';
 
+        // Formatear precio
+        let precioFormateado = '';
+        if (producto.price !== null && producto.price !== undefined && producto.price !== '') {
+            const precioStr = String(producto.price).replace(/[₡,\s]/g, '');
+            const precioNum = parseFloat(precioStr);
+            precioFormateado = !isNaN(precioNum)
+                ? `₡${precioNum.toLocaleString('es-CR')}`
+                : String(producto.price);
+        }
+
         // Actualizar contenido del modal
-        document.getElementById('modal-imagen').src = producto.imagen;
-        document.getElementById('modal-imagen').alt = producto.nombre;
+        document.getElementById('modal-imagen').src = producto.imagen || '';
+        document.getElementById('modal-imagen').alt = producto.nombre || 'Producto';
         document.getElementById('modal-categoria').textContent = nombreCategoria;
-        document.getElementById('modal-titulo').textContent = producto.nombre;
-        document.getElementById('modal-precio').textContent = `₡${producto.price.toLocaleString('es-CR')}`;
-        document.getElementById('modal-marca').textContent = producto.marca;
-        document.getElementById('modal-descripcion').textContent = producto.descripcion;
+        document.getElementById('modal-titulo').textContent = producto.nombre || '';
+        document.getElementById('modal-precio').textContent = precioFormateado;
+        document.getElementById('modal-marca').textContent = producto.marca || '';
+        document.getElementById('modal-descripcion').textContent = producto.descripcion || '';
 
         // Actualizar características
         const caracteristicasContainer = document.getElementById('modal-caracteristicas');
-        caracteristicasContainer.innerHTML = producto.caracteristicas.map(caract => `
-            <div class="caracteristica-item">
-                <i class="fas fa-check-circle"></i>
-                <span>${caract}</span>
-            </div>
-        `).join('');
+        if (producto.caracteristicas && Array.isArray(producto.caracteristicas)) {
+            caracteristicasContainer.innerHTML = producto.caracteristicas.map(caract => `
+                <div class="caracteristica-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${caract}</span>
+                </div>
+            `).join('');
+        } else {
+            caracteristicasContainer.innerHTML = '';
+        }
 
         // Configurar botón de comprar del modal con el producto actual
         const btnComprarModal = document.getElementById('btn-comprar');
