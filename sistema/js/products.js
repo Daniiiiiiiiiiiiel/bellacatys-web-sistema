@@ -36,7 +36,7 @@ function renderProducts(products) {
         return;
     }
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bella-catys.vercel.app';
     tbody.innerHTML = products.map(p => `
         <tr>
             <td class="prod-img-cell" data-label="Imagen">
@@ -235,7 +235,7 @@ window.editProduct = (id) => {
     document.getElementById('product-descripcion').value = p.descripcion;
     document.getElementById('product-imagen').value = p.imagen;
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bella-catys.vercel.app';
     const imgSrc = p.imagen ? (p.imagen.startsWith('/') ? baseUrl + p.imagen : p.imagen) : '';
 
     if (imgSrc) {
