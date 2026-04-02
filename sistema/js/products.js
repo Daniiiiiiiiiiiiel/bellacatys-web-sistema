@@ -179,9 +179,9 @@ function renderizarProductos(productos, reiniciar = false) {
                 </div>
             </div>
             
-            <div class="producto-imagen-container">
-                <div class="producto-imagen-wrapper">
-                    <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
+            <div class="producto-imagen-container" style="height: 350px; overflow: hidden;">
+                <div class="producto-imagen-wrapper" style="height: 100%;">
+                    <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
             </div>
         </div>
