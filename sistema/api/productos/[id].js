@@ -28,7 +28,8 @@ export default async function handler(req, res) {
     return res.status(405).end();
   } catch (e) {
     if (e.code === "P2025") return res.status(404).json({ error: "Producto no encontrado" });
-    throw e;
+    console.error(e);
+    return res.status(500).json({ error: e.message || "Error interno de servidor" });
   } finally { 
     await prisma.$disconnect(); 
   }
