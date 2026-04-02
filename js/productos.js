@@ -148,25 +148,40 @@ function renderizarProductos(productos, reiniciar = false) {
         else if (producto.categoria === 'skincare') nombreCategoria = 'Skincare';
         else if (producto.categoria === 'cabello') nombreCategoria = 'Cabello';
 
+        // Formatear precio: soporta string "₡8000" o número, con fallback seguro
+        let precioFormateado = '';
+        if (producto.price !== null && producto.price !== undefined && producto.price !== '') {
+            const precioStr = String(producto.price).replace(/[₡,\s]/g, '');
+            const precioNum = parseFloat(precioStr);
+            precioFormateado = !isNaN(precioNum)
+                ? `₡${precioNum.toLocaleString('es-CR')}`
+                : String(producto.price);
+        }
+
+        // Descripción truncada a 120 caracteres
+        const descripcionCorta = producto.descripcion
+            ? (producto.descripcion.length > 120 ? producto.descripcion.substring(0, 120) + '...' : producto.descripcion)
+            : '';
+
         return `
-        <div class="producto-card" data-id="${producto.id}" data-categoria="${producto.categoria}">
+        <div class="producto-card" data-id="${producto.id}" data-categoria="${producto.categoria || ''}">
             <div class="producto-info-detalle">
                 <div>
                     <span class="producto-categoria">${nombreCategoria}</span>
                   
                     <div class="producto-flex" style="display:flex;justify-content: space-between; margin-top: 1rem;">
-                        <div class="" style=" margin-top: -1rem;">
-                            <span class="producto-marca"">${producto.marca}</span>
-                            <h2 class="producto-titulo">${producto.nombre}</h2>
+                        <div style="margin-top: -1rem;">
+                            <span class="producto-marca">${producto.marca || ''}</span>
+                            <h2 class="producto-titulo">${producto.nombre || ''}</h2>
                         </div>
-                        <div class="">
-                            <h1 class="producto-precio">${producto.price}</h1>
+                        <div>
+                            <h1 class="producto-precio">${precioFormateado}</h1>
                         </div>
                     </div>
 
                     <div class="producto-descripcion">
                         <h3>Descripción</h3>
-                        <p>${producto.descripcion ? (producto.descripcion.length > 120 ? producto.descripcion.substring(0, 120) + '...' : producto.descripcion) : ''}</p>
+                        <p>${descripcionCorta}</p>
                     </div>
                 </div>
                 
@@ -184,7 +199,7 @@ function renderizarProductos(productos, reiniciar = false) {
             
             <div class="producto-imagen-container">
                 <div class="producto-imagen-wrapper">
-                    <img src="${producto.imagen}" loading="lazy" alt="${producto.nombre}">
+                    <img src="${producto.imagen || ''}" loading="lazy" alt="${producto.nombre || 'Producto'}">
                 </div>
             </div>
         </div>
@@ -478,15 +493,21 @@ function cerrarModal() {
     document.getElementById('modal-producto').style.display = 'none';
 }
 
-// Agregar evento al botón de cerrar
-document.getElementById('modal-cerrar').addEventListener('click', cerrarModal);
+// Agregar evento al botón de cerrar (usa clase, no ID)
+const _btnCerrarModal = document.querySelector('.modal-cerrar');
+if (_btnCerrarModal) {
+    _btnCerrarModal.addEventListener('click', cerrarModal);
+}
 
 // Opcional: Cerrar modal al hacer clic fuera de él
-document.getElementById('modal-producto').addEventListener('click', function (e) {
-    if (e.target === this) {
-        cerrarModal();
-    }
-});
+const _modalProducto = document.getElementById('modal-producto');
+if (_modalProducto) {
+    _modalProducto.addEventListener('click', function (e) {
+        if (e.target === this) {
+            cerrarModal();
+        }
+    });
+}
 
 // Animación de productos
 function animarProductos() {
