@@ -24,7 +24,10 @@ body {
     overflow-x: hidden;
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
 }
@@ -398,7 +401,7 @@ nav ul li a.active::after {
     line-height: 1.7;
     font-size: 0.95rem;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
@@ -448,21 +451,26 @@ nav ul li a.active::after {
     justify-content: center;
     gap: 8px;
 }
-.pedir{
+
+.pedir {
     background: var(--color-naranja);
 
 }
+
 .btn-ver-mas:hover {
     background: var(--color-verde-claro);
     transform: translateY(-2px);
 }
-.pedir:hover{
+
+.pedir:hover {
     background: var(--color-naranja);
     transform: translateY(-2px);
 }
-.pedir:active{
+
+.pedir:active {
     background: var(--color-naranja);
 }
+
 /* Imagen del producto */
 .producto-imagen-container {
     position: relative;
@@ -490,7 +498,7 @@ nav ul li a.active::after {
 .producto-imagen-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 12px;
     transition: all 0.4s ease;
 }
@@ -498,6 +506,7 @@ nav ul li a.active::after {
 .producto-card:hover .producto-imagen-wrapper img {
     transform: scale(1.05);
 }
+
 /* Modal */
 .modal {
     display: none;
@@ -513,8 +522,13 @@ nav ul li a.active::after {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-contenido {
@@ -530,8 +544,15 @@ nav ul li a.active::after {
 }
 
 @keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .modal-cerrar {
@@ -926,46 +947,46 @@ footer {
     header {
         height: 85px;
     }
-    
+
     .logo img {
         height: 105px;
         max-width: 220px;
     }
-    
+
     .logo p {
         font-size: 0.8rem;
     }
-    
+
     .container-catalogo {
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar-filtros {
         position: static;
     }
-    
+
     .producto-card {
         grid-template-columns: 1fr;
     }
-    
+
     .producto-imagen-wrapper {
         height: 300px;
     }
-    
+
     .modal-cuerpo {
         grid-template-columns: 1fr;
     }
-    
+
     .modal-imagen {
         border-radius: 20px 20px 0 0;
         padding: 2rem;
         max-height: 400px;
     }
-    
+
     .modal-imagen img {
         max-height: 350px;
     }
-    
+
     .modal-info {
         padding: 2rem;
     }
@@ -975,7 +996,7 @@ footer {
     header {
         height: 105px;
     }
-    
+
     #modal-precio {
         font-size: 1.9rem;
         margin-bottom: 1.5rem;
@@ -984,7 +1005,7 @@ footer {
     #modal-titulo {
         font-size: 2rem;
     }
-    
+
     .producto-precio {
         font-size: 1.5rem;
         margin-top: 0;
@@ -992,26 +1013,26 @@ footer {
         padding: 0.6rem 1rem;
         margin-left: 0;
     }
-    
+
     header .container {
         padding: 0 1rem;
     }
-    
+
     .logo {
         align-items: center;
     }
-    
+
     .logo img {
         height: 95px;
         max-width: 180px;
     }
-    
+
     .logo p {
         font-size: 0.75rem;
         text-align: center;
         padding-left: 0;
     }
-    
+
     nav ul {
         display: none;
         flex-direction: column;
@@ -1023,68 +1044,68 @@ footer {
         box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         padding: 1rem 0 0 0;
     }
-    
+
     nav ul.active {
         display: flex;
     }
-    
+
     nav ul li {
         margin: 0;
         text-align: center;
         padding: 1rem;
         border-bottom: 1px solid #eee;
     }
-    
+
     nav ul li:last-child {
         padding-bottom: 1rem;
         border-bottom: none;
     }
-    
+
     nav ul li a {
         display: block;
         position: relative;
     }
-    
+
     nav ul li a::after {
         margin-left: -5lvh;
         bottom: -1rem;
         left: 0;
         height: 1px;
     }
-    
+
     nav ul li a:hover::after,
     nav ul li a.active::after {
         margin-left: -5lvh;
         width: 150%;
     }
-    
+
     .mobile-menu {
         display: flex;
     }
-    
+
     .catalogo-main {
         padding: 1rem;
     }
-    
+
     .catalogo-header {
         margin-bottom: 1.5rem;
         padding-bottom: 1rem;
     }
-    
+
     .catalogo-header h1 {
         font-size: 1.8rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .resultados-count {
         font-size: 0.9rem;
     }
-    
+
     /* Tarjetas optimizadas móvil */
     .productos-lista {
         gap: 1.5rem;
     }
-    
+
     .producto-card {
         padding: 0;
         gap: 0;
@@ -1093,11 +1114,11 @@ footer {
         border-radius: 15px;
         overflow: hidden;
     }
-    
+
     .producto-card::before {
         display: none;
     }
-    
+
     .producto-imagen-container {
         order: -1;
         width: 100%;
@@ -1105,91 +1126,91 @@ footer {
         border-radius: 0;
         background: white;
     }
-    
+
     .producto-imagen-wrapper {
         width: 100%;
         height: 260px;
         border-radius: 0;
         margin: 0;
     }
-    
+
     .producto-imagen-wrapper img {
         border-radius: 0;
     }
-    
+
     .producto-info-detalle {
         order: 1;
         padding: 1.5rem;
         background: linear-gradient(135deg, var(--color-crema) 0%, rgba(241, 231, 213, 0.5) 100%);
     }
-    
+
     .producto-marca {
         font-size: 0.85rem;
         margin-bottom: 0.3rem;
     }
-    
+
     .producto-categoria {
         font-size: 0.75rem;
         padding: 5px 12px;
         margin-bottom: 0.8rem;
     }
-    
+
     .producto-titulo {
         font-size: 1.5rem;
         margin-bottom: 1rem;
         line-height: 1.2;
     }
-    
+
     .producto-descripcion {
         padding: 1.2rem;
         margin-bottom: 1.2rem;
     }
-    
+
     .producto-descripcion h3 {
         font-size: 1rem;
         margin-bottom: 0.6rem;
     }
-    
+
     .producto-descripcion p {
         font-size: 0.9rem;
         line-height: 1.6;
         -webkit-line-clamp: 3;
     }
-    
+
     .producto-acciones {
         flex-direction: row;
         gap: 0.8rem;
         margin-top: auto;
     }
-    
+
     .btn-ver-mas {
         padding: 0.9rem;
         font-size: 0.95rem;
     }
 
-    
+
     .modal-contenido {
         width: 95%;
         margin: 10% auto;
     }
-    
+
     /* Footer responsive */
     footer {
         padding: 2.5rem 0 1rem;
     }
-    
+
     .footer-content {
         grid-template-columns: 1fr;
         gap: 2.5rem;
     }
-    
+
     .footer-section {
         background: rgba(255, 255, 255, 0.05);
         padding: 1.5rem;
         border-radius: 15px;
         border-left: 3px solid var(--color-naranja);
     }
-    
+
     /* Paginación responsive */
     .controles-paginacion {
         flex-wrap: wrap;
@@ -1197,7 +1218,7 @@ footer {
         padding: 12px;
         margin-top: 30px;
     }
-    
+
     .info-paginacion {
         order: -1;
         width: 100%;
@@ -1205,7 +1226,7 @@ footer {
         border-bottom: 1px solid #e0e0e0;
         margin-bottom: 5px;
     }
-    
+
     .btn-paginacion {
         flex: 1;
         min-width: 110px;
@@ -1220,96 +1241,96 @@ footer {
     header {
         height: 90px;
     }
-    
+
     .logo img {
         height: 85px;
         margin-right: 0;
         max-width: 140px;
     }
-    
+
     .logo p {
         font-size: 0.65rem;
     }
-    
+
     .catalogo-main {
         padding: 0.8rem;
     }
-    
+
     .catalogo-header h1 {
         font-size: 1.5rem;
     }
-    
+
     .resultados-count {
         font-size: 0.85rem;
     }
-    
+
     .productos-lista {
         gap: 1.2rem;
     }
-    
+
     .producto-card {
         border-radius: 12px;
     }
-    
+
     .producto-imagen-wrapper {
         height: 220px;
     }
-    
+
     .producto-info-detalle {
         padding: 1.2rem;
     }
-    
+
     .producto-marca {
         font-size: 0.8rem;
     }
-    
+
     .producto-categoria {
         font-size: 0.7rem;
         padding: 4px 10px;
         margin-bottom: 0.6rem;
     }
-    
+
     .producto-titulo {
         font-size: 1.3rem;
         margin-bottom: 0.8rem;
     }
-    
+
     .producto-precio {
         font-size: 1.3rem;
         padding: 0.5rem 0.8rem;
         margin-bottom: 1rem;
     }
-    
+
     .producto-descripcion {
         padding: 1rem;
         margin-bottom: 1rem;
     }
-    
+
     .producto-descripcion h3 {
         font-size: 0.95rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .producto-descripcion p {
         font-size: 0.85rem;
         line-height: 1.5;
     }
-    
+
     .producto-acciones {
         gap: 0.6rem;
     }
-    
+
     .btn-ver-mas {
         padding: 0.8rem;
         font-size: 0.9rem;
         gap: 6px;
     }
-    
+
     .modal-contenido {
         margin: 5% auto;
         border-radius: 15px;
     }
-    
+
     .modal-cerrar {
         top: 15px;
         right: 15px;
@@ -1317,48 +1338,48 @@ footer {
         height: 35px;
         font-size: 1.5rem;
     }
-    
+
     .modal-info {
         padding: 1.5rem;
     }
-    
+
     #modal-titulo {
         font-size: 1.5rem;
         margin-bottom: 1rem;
     }
-    
+
     #modal-precio {
         font-size: 1.9rem;
         margin-bottom: 1.5rem;
     }
-    
+
     #modal-descripcion {
         font-size: 0.9rem;
         margin-bottom: 1.2rem;
     }
-    
+
     .modal-caracteristicas {
         gap: 0.6rem;
         margin-bottom: 1.5rem;
     }
-    
+
     .btn-comprar {
         padding: 1rem;
         font-size: 1rem;
     }
-    
+
     .btn-paginacion {
         padding: 9px 14px;
         font-size: 13px;
         gap: 5px;
         min-width: 100px;
     }
-    
+
     .controles-paginacion {
         gap: 10px;
         padding: 10px;
     }
-    
+
     .btn-ver-mas-productos {
         padding: 0.9rem 2rem;
         font-size: 0.95rem;
