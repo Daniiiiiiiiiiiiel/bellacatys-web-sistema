@@ -153,14 +153,13 @@ function renderizarProductos(productos, reiniciar = false) {
             <div class="producto-info-detalle">
                 <div>
                     <span class="producto-categoria">${nombreCategoria}</span>
-                  
                     <div class="producto-flex" style="display:flex;justify-content: space-between; margin-top: 1rem;">
-                        <div class="" style=" margin-top: -1rem;">
-                            <span class="producto-marca"">${producto.marca}</span>
+                        <div style="margin-top: -1rem;">
+                            <span class="producto-marca">${producto.marca || ''}</span>
                             <h2 class="producto-titulo">${producto.nombre}</h2>
                         </div>
-                        <div class="">
-                            <h1 class="producto-precio">${producto.price}</h1>
+                        <div>
+                            <h1 class="producto-precio">₡${Number(producto.price).toLocaleString('es-CR')}</h1>
                         </div>
                     </div>
 
@@ -172,19 +171,17 @@ function renderizarProductos(productos, reiniciar = false) {
                 
                 <div class="producto-acciones">
                     <button class="btn-ver-mas" data-id="${producto.id}">
-                        <i class="fas fa-info-circle"></i>
-                        detalles
+                        <i class="fas fa-info-circle"></i> detalles
                     </button>
                     <button class="btn-ver-mas pedir btn-comprar-2" data-id="${producto.id}">
-                        <i class="fas fa-shopping-cart"></i>
-                        Pedir
+                        <i class="fas fa-shopping-cart"></i> Pedir
                     </button>
                 </div>
             </div>
             
             <div class="producto-imagen-container">
                 <div class="producto-imagen-wrapper">
-                    <img src="${producto.imagen}" loading="lazy" alt="${producto.nombre}">
+                    <img src="${producto.imagen}" alt="${producto.nombre}" loading="lazy">
                 </div>
             </div>
         </div>
