@@ -24,7 +24,15 @@ async function loadProducts() {
 function renderProducts(products) {
     const tbody = document.getElementById('products-tbody');
     if (products.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No hay productos</td></tr>';
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; padding: 3rem 0;">
+                    <div style="color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; opacity: 0.3;"></i>
+                        <p style="font-size: 1.1rem;">No se encontraron productos en esta categoría</p>
+                    </div>
+                </td>
+            </tr>`;
         return;
     }
 
@@ -52,7 +60,7 @@ function setupEventListeners() {
     // Menu mobile
     const sidebar = document.querySelector('.sidebar');
     const menuToggle = document.querySelector('.menu-toggle');
-    
+
     menuToggle.addEventListener('click', () => {
         sidebar.classList.toggle('open');
     });
@@ -101,7 +109,7 @@ function setupEventListeners() {
         if (!file) return;
 
         uploadPlaceholder.innerHTML = '<i class="fas fa-spinner fa-spin"></i><p>Subiendo imagen...</p>';
-        
+
         const formData = new FormData();
         formData.append('file', file);
 
@@ -111,7 +119,7 @@ function setupEventListeners() {
                 body: formData
             });
             const data = await res.json();
-            
+
             if (data.ok) {
                 imageUrlInput.value = data.url;
                 imagePreview.src = data.url;
@@ -130,7 +138,7 @@ function setupEventListeners() {
     // Form submit
     document.getElementById('product-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+
         const caracteristicas = Array.from(document.querySelectorAll('.caract-input'))
             .map(input => input.value.trim())
             .filter(val => val !== '');
@@ -191,8 +199,8 @@ function filterProducts() {
     const category = document.getElementById('admin-filter').value;
 
     const filtered = allProducts.filter(p => {
-        const matchSearch = p.nombre.toLowerCase().includes(search) || 
-                            p.marca.toLowerCase().includes(search);
+        const matchSearch = p.nombre.toLowerCase().includes(search) ||
+            p.marca.toLowerCase().includes(search);
         const matchCategory = category === 'todos' || p.categoria === category;
         return matchSearch && matchCategory;
     });
@@ -219,7 +227,7 @@ window.editProduct = (id) => {
 
     editingId = id;
     document.getElementById('modal-title').textContent = 'Editar Producto';
-    
+
     document.getElementById('product-nombre').value = p.nombre;
     document.getElementById('product-marca').value = p.marca;
     document.getElementById('product-categoria').value = p.categoria;
@@ -227,7 +235,7 @@ window.editProduct = (id) => {
     document.getElementById('product-descripcion').value = p.descripcion;
     document.getElementById('product-imagen').value = p.imagen;
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema-o1cv.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema.vercel.app';
     const imgSrc = p.imagen ? (p.imagen.startsWith('/') ? baseUrl + p.imagen : p.imagen) : '';
 
     if (imgSrc) {
