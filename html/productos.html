@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Bella Catys</title>
+    <link rel="stylesheet" href="../css/productos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img onclick="" src="../img/inicio/bellacatys.png" alt="logo principal">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html#inicio">Inicio</a></li>
+                    <li><a href="../index.html#productos">Productos</a></li>
+                    <li><a href="../html/productos.html" class="active">Catálogo</a></li>
+                    <li><a href="blog.html">Descubre</a></li>
+                    <li><a href="../index.html#nosotros">Nosotros</a></li>
+                    <li><a href="../index.html#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Catálogo -->
+    <section class="catalogo-section">
+        <div class="container-catalogo">
+            <!-- Sidebar con filtros -->
+            <aside class="sidebar-filtros">
+                <h2 class="italic">Filtrar Productos</h2>
+
+                <div class="filtro-grupo">
+                    <h3><i class="fas fa-list"></i> Categorías</h3>
+                    <div class="filtro-opciones">
+                        <label class="filtro-item">
+                            <input type="radio" name="categoria" value="todos" checked>
+                            <span>Todos los productos</span>
+                        </label>
+                        <label class="filtro-item">
+                            <input type="radio" name="categoria" value="maquillaje">
+                            <span>Maquillaje</span>
+                        </label>
+                        <label class="filtro-item">
+                            <input type="radio" name="categoria" value="skincare">
+                            <span>Skincare</span>
+                        </label>
+                        <label class="filtro-item">
+                            <input type="radio" name="categoria" value="cabello">
+                            <span>Cabello</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="filtro-grupo">
+                    <h3><i class="fas fa-search"></i> Búsqueda</h3>
+                    <input type="text" id="buscar-producto" class="input-buscar" placeholder="Buscar producto...">
+                </div>
+
+                <button class="btn-limpiar-filtros">
+                    <i class="fas fa-redo"></i> Limpiar filtros
+                </button>
+            </aside>
+
+            <!-- Área principal de productos -->
+            <main class="catalogo-main">
+                <div class="catalogo-header">
+                    <h1>Catálogo de <span class="italic">Productos</span></h1>
+                    <p class="resultados-count"><span id="count"></span> productos disponibles</p>
+                </div>
+
+                <!-- Lista de productos -->
+                <div class="productos-lista" id="productos-lista">
+                    <!-- Los productos se cargarán dinámicamente con JavaScript -->
+                </div>
+            </main>
+        </div>
+    </section>
+
+    <!-- Modal/Popup para detalles del producto - ESTRUCTURA MEJORADA -->
+    <div id="modal-producto" class="modal">
+        <div class="modal-contenido">
+            <span class="modal-cerrar">&times;</span>
+            <div class="modal-cuerpo">
+                <!-- Imagen del producto -->
+                <div class="modal-imagen">
+                    <img id="modal-imagen" src="" alt="">
+                </div>
+                
+                <!-- Información del producto -->
+                <div class="modal-info">
+                    <!-- Header del modal -->
+                    <div class="modal-header-info">
+                        <span class="modal-categoria" id="modal-categoria"></span>
+                        <span class="modal-marca" id="modal-marca"></span>
+                        <h2 id="modal-titulo"></h2>
+                    </div>
+
+                    <!-- Precio destacado -->
+                    <div id="modal-precio"></div>
+
+                    <!-- Body del modal con scroll -->
+                    <div class="modal-body-info">
+                        <p id="modal-descripcion"></p>
+                        <div class="modal-caracteristicas" id="modal-caracteristicas"></div>
+                    </div>
+
+                    <!-- Acciones del modal -->
+                    <div class="modal-acciones">
+                        <button class="btn-comprar" id="btn-comprar">
+                            <i class="fas fa-shopping-cart"></i> Pedir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="italic">Bella Catys</h3>
+                    <p>Tu destino para productos de belleza de calidad premium.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/catysbella?igsh=Z3ByY3ZuMGFhYXpi" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/1DJdMNhpar/" class="social-link">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="https://wa.me/50689523778" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html#inicio">Inicio</a></li>
+                        <li><a href="../index.html#productos">Productos</a></li>
+                        <li><a href="blog.html">Descubre</a></li>
+                        <li><a href="../index.html#nosotros">Sobre nosotros</a></li>
+                        <li><a href="../index.html#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> Bellacatys@outlook.es</p>
+                        <p><i class="fas fa-phone"></i> +506 8952 3778</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Bella Catys. Todos los derechos reservados. | Desarrollado por 
+                    <strong>
+                        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=romero.dev07@gmail.com" class="dev">
+                            romero.dev07@gmail.com
+                        </a>
+                    </strong>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../js/productos.js"></script>
+</body>
+
+</html>

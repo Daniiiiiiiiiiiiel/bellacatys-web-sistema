@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Belleza Personalizado - Bella Catys</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/quiz.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Minimal Top Bar -->
+    <div class="quiz-top-bar">
+        <a href="../index.html" class="quiz-logo">
+            <img src="../img/inicio/bellacatys.png" alt="Bella Catys">
+        </a>
+        <a href="../html/blog.html" class="quiz-exit-btn" title="Salir del quiz">
+            <i class="fas fa-times"></i>
+        </a>
+    </div>
+
+    <!-- Quiz Container -->
+    <div class="quiz-container">
+        <!-- Progress Bar -->
+        <div class="quiz-progress-container">
+            <div class="quiz-progress-bar" id="progressBar"></div>
+            <div class="quiz-progress-text" id="progressText">Paso 1 de 5</div>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="quiz-content" id="quizContent">
+            <!-- Start Screen -->
+            <div class="quiz-screen active" id="startScreen">
+                <div class="quiz-hero">
+                    <i class="fas fa-sparkles quiz-hero-icon"></i>
+                    <h1>Descubre Tu Rutina Perfecta</h1>
+                    <p class="quiz-subtitle">Responde algunas preguntas y te ayudaremos a encontrar los productos
+                        ideales para ti</p>
+                    <button class="quiz-btn quiz-btn-primary" onclick="iniciarQuiz()">
+                        <span>Comenzar</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Type Selection -->
+            <div class="quiz-screen" id="typeScreen">
+                <div class="quiz-question-container">
+                    <h2 class="quiz-question-title">¿Qué te gustaría analizar?</h2>
+                    <p class="quiz-question-subtitle">Selecciona una opción para comenzar tu análisis personalizado</p>
+                    <div class="quiz-type-grid">
+                        <div class="quiz-type-card" onclick="seleccionarTipo('cabello')">
+                            <i class="fas fa-cut"></i>
+                            <h3>Mi Cabello</h3>
+                            <p>Encuentra productos perfectos para tu tipo de cabello</p>
+                        </div>
+                        <div class="quiz-type-card quiz-coming-soon">
+                            <i class="fas fa-spa"></i>
+                            <h3>Mi Piel</h3>
+                            <span class="coming-soon-badge">Próximamente</span>
+                            <p>Descubre tu rutina de skincare ideal</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Screen -->
+            <div class="quiz-screen" id="questionsScreen">
+                <div class="quiz-question-container">
+                    <h2 class="quiz-question-title" id="questionTitle"></h2>
+                    <p class="quiz-question-subtitle" id="questionSubtitle"></p>
+                    <div class="quiz-options-grid" id="optionsContainer"></div>
+                    <div class="quiz-navigation">
+                        <button class="quiz-btn quiz-btn-secondary" id="backBtn" onclick="anteriorPregunta()">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Anterior</span>
+                        </button>
+                        <button class="quiz-btn quiz-btn-primary" id="nextBtn" onclick="siguientePregunta()" disabled>
+                            <span>Siguiente</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading Screen -->
+            <div class="quiz-screen" id="loadingScreen">
+                <div class="quiz-loading">
+                    <div class="loading-spinner"></div>
+                    <h2>Analizando tus respuestas...</h2>
+                    <p id="loadingText">Creando tu rutina personalizada</p>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div class="quiz-screen" id="resultsScreen">
+                <div class="quiz-results">
+                    <div class="results-header">
+                        <i class="fas fa-check-circle results-icon"></i>
+                        <h1>¡Tus Resultados!</h1>
+                        <div class="results-type-badge" id="resultTypeBadge"></div>
+                    </div>
+
+                    <div class="results-analysis" id="resultsAnalysis"></div>
+
+                    <div class="results-section">
+                        <h2><i class="fas fa-shopping-bag"></i> Productos Recomendados</h2>
+                        <div class="results-products-grid" id="resultsProducts"></div>
+                    </div>
+
+                    <div class="results-section">
+                        <h2><i class="fas fa-list-check"></i> Tu Rutina Personalizada</h2>
+                        <div class="results-routine" id="resultsRoutine"></div>
+                    </div>
+
+                    <div class="results-actions">
+                        <a href="productos.html" class="quiz-btn quiz-btn-primary">
+                            <span>Ver Catálogo Completo</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <button class="quiz-btn quiz-btn-secondary" onclick="reiniciarQuiz()">
+                            <i class="fas fa-redo"></i>
+                            <span>Hacer el Quiz Nuevamente</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/quiz.js"></script>
+</body>
+
+</html>

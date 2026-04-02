@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog de Belleza - Bella Catys</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="../index.html">
+                    <img src="../img/inicio/bellacatys.png" alt="logo principal">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html#inicio">Inicio</a></li>
+                    <li><a href="../index.html#productos">Productos</a></li>
+                    <li><a href="../html/productos.html">Catálogo</a></li>
+                    <li><a href="blog.html" class="active">Descubre</a></li>
+                    <li><a href="../index.html#nosotros">Nosotros</a></li>
+                    <li><a href="../index.html#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Minimalist Hero Section -->
+    <section class="blog-hero-minimal"
+        style="background-image: url('../blog/hero-belleza-desktop.png'); background-size: cover; background-position: center;">
+        <div class="hero-content-minimal">
+            <h1>Descubre</h1>
+            <p>Rutinas • Tratamientos • Consejos</p>
+        </div>
+    </section>
+
+    <!-- Filter Tabs -->
+    <section class="filter-section">
+        <div class="container">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-categoria="todos">Todos</button>
+                <button class="filter-tab" data-categoria="rutinas">Rutinas</button>
+                <button class="filter-tab" data-categoria="cuidado-piel">Piel</button>
+                <button class="filter-tab" data-categoria="cuidado-cabello">Cabello</button>
+                <button class="filter-tab" data-categoria="ingredientes">Ingredientes</button>
+                <button class="filter-tab" data-categoria="tips">Tips</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <section class="content-main">
+        <div class="container">
+            <!-- Search Bar -->
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="buscar-articulo" placeholder="Buscar artículos...">
+            </div>
+
+            <!-- Articles Grid -->
+            <div id="articulos-grid" class="articles-grid-minimal">
+                <!-- Articles will be rendered here by JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more-wrapper">
+                <button class="btn-load-more">Ver más</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="faq-header">
+                <h3>Preguntas Frecuentes</h3>
+                <p>Resolvemos tus dudas más comunes sobre belleza y cuidado personal</p>
+            </div>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>¿En qué orden debo aplicar mis productos?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>La regla de oro es ir de la textura más ligera a la más pesada: Limpiador > Tónico > Serum >
+                            Contorno de ojos > Crema hidratante > Aceite > Protector solar (de día). Esto asegura que
+                            cada producto penetre correctamente sin ser bloqueado por uno más denso.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>¿Cuántas veces debo exfoliar mi piel?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Depende de tu tipo de piel, pero generalmente 1 o 2 veces por semana es suficiente. Si tienes
+                            piel sensible, opta por exfoliantes químicos suaves (PHA o Ácido Láctico) en lugar de
+                            físicos (scrubs) y hazlo cada 10 días. El exceso de exfoliación puede dañar la barrera
+                            cutánea.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>¿Es necesario usar protector solar en casa?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>¡Sí! Los rayos UVA (los que causan envejecimiento) atraviesan las ventanas. Además, la luz
+                            azul de las pantallas (móviles, ordenadores) también puede contribuir a la
+                            hiperpigmentación. Usa un SPF 30 o 50 diariamente como último paso de tu rutina de mañana.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h4>¿Cómo sé cuál es mi tipo de piel?</h4>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Lava tu cara y espera 30 minutos sin aplicar nada. Si sientes tirantez general, es seca. Si
+                            brilla en todo el rostro, es grasa. Si solo brilla en la zona T (frente y nariz) pero las
+                            mejillas están secas, es mixta. Si no sientes molestias ni exceso de brillo, es normal.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Quiz Call-to-Action Section - Redesigned Minimalist -->
+    <section class="quiz-cta-redesigned">
+        <div class="container">
+            <div class="quiz-cta-wrapper">
+                <!-- Left Content -->
+                <div class="quiz-content-side">
+                    <div class="quiz-tag-minimal">
+                        <i class="fas fa-sparkles"></i>
+                        <span>Personalizado</span>
+                    </div>
+                    <h2 class="quiz-heading-minimal">
+                        Descubre tu rutina perfecta
+                    </h2>
+                    <p class="quiz-subtitle-minimal">
+                        Un quiz personalizado que analiza tu tipo de cabello y te recomienda productos específicos para
+                        ti. Resultados en 2 minutos.
+                    </p>
+                    <div class="quiz-stats">
+                        <div class="quiz-stat-item">
+                            <span class="stat-number">2 min</span>
+                            <span class="stat-label">Duración</span>
+                        </div>
+                        <div class="quiz-stat-divider"></div>
+                        <div class="quiz-stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Personalizado</span>
+                        </div>
+                        <div class="quiz-stat-divider"></div>
+                        <div class="quiz-stat-item">
+                            <span class="stat-number">5</span>
+                            <span class="stat-label">Preguntas</span>
+                        </div>
+                    </div>
+                    <a href="quiz.html" class="btn-quiz-minimal">
+                        Comenzar Quiz
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 10H16M16 10L10 4M16 10L10 16" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                </div>
+
+                <!-- Right Visual -->
+                <div class="quiz-visual-side">
+                    <div class="quiz-visual-container">
+                        <div class="quiz-visual-card main-card">
+                            <div class="card-icon">
+                                <i class="fas fa-cut"></i>
+                            </div>
+                            <h3>Análisis Capilar</h3>
+                            <p>Identifica tu tipo de cabello</p>
+                            <div class="card-badge">Paso 1</div>
+                        </div>
+                        <div class="quiz-visual-card secondary-card">
+                            <div class="card-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h3>Recomendaciones</h3>
+                            <p>Productos ideales para ti</p>
+                            <div class="card-badge">Paso 2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="italic">Bella Catys</h3>
+                    <p>Tu destino para productos de belleza de calidad premium.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/catysbella?igsh=Z3ByY3ZuMGFhYXpi" class="social-link"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/share/1DJdMNhpar/" class="social-link"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/50689523778" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rápidos</h4>
+                    <ul>
+                        <li><a href="../index.html#inicio">Inicio</a></li>
+                        <li><a href="../index.html#productos">Productos</a></li>
+                        <li><a href="blog.html">Descubre</a></li>
+                        <li><a href="../index.html#nosotros">Sobre nosotros</a></li>
+                        <li><a href="../index.html#contacto">Contacto</a></li>              
+                    </ul> 
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> Bellacatys@outlook.es</p>
+                        <p><i class="fas fa-phone"></i> +506 8952 3778</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Bella Catys. Todos los derechos reservados. | Desarrollado por <strong><a
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=romero.dev07@gmail.com"
+                            class="dev">romero.dev07@gmail.com</a></strong></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Full Screen Editorial Modal -->
+    <div id="modal-fullscreen" class="modal-fullscreen">
+        <!-- Reading Progress Bar -->
+        <div class="reading-progress" id="reading-progress"></div>
+
+        <!-- Close Button -->
+        <button class="modal-close">
+            <i class="fas fa-times"></i>
+        </button>
+
+
+        <div class="modal-fullscreen-content">
+            <div class="modal-body">
+                <!-- Content will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/blog.js"></script>
+</body>
+
+</html>
