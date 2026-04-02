@@ -56,7 +56,7 @@ async function verifySession() {
         if (userDisplay) {
             userDisplay.textContent = data.user;
         }
-        
+        document.body.classList.add('auth-checked');
     } catch (e) {
         window.location.href = '/';
     }
