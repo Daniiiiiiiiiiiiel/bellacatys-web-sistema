@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bella Catys - Productos de Belleza Premium</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="index.html">
+                    <img onclick="" src="img/inicio/bellacatys.png" alt="logo principal">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#productos">Productos</a></li>
+                    <li><a href="html/productos.html">Catálogo</a></li>
+                    <li><a href="html/blog.html">Descubre</a></li>
+                    <li><a href="#nosotros">Nosotros</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h2 class="italic" id="typer"></h2>
+            <p>Productos de calidad premium para realzar tu belleza interior y exterior</p>
+            <a href="html/productos.html" class="btn">Explorar productos</a>
+        </div>
+    </section>
+
+    <!-- Catálogo de Productos -->
+    <section id="productos" class="productos">
+        <div class="container">
+            <h2>Nuestros <span class="italic">Productos</span></h2>
+            <p class="section-subtitle">Selección de productos de belleza para cuidar tu piel y cabello</p>
+
+            <!-- El grid se llenará dinámicamente con JavaScript desde productosDB -->
+            <div class="productos-grid">
+                <!-- Los productos se cargan automáticamente desde el archivo data.js -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- Quiz CTA Section -->
+    <section id="quiz-cta" class="quiz-cta">
+        <div class="container">
+            <div class="quiz-cta-content">
+                <div class="quiz-cta-icon">
+                    <i class="fas fa-sparkles"></i>
+                </div>
+                <h2>¿No Sabes Por Dónde <span class="italic">Empezar</span>?</h2>
+                <p class="quiz-cta-subtitle">Descubre tu rutina de belleza ideal en solo 2 minutos</p>
+                <p class="quiz-cta-description">Nuestro quiz personalizado te recomendará los productos perfectos para
+                    tu tipo de cabello y necesidades específicas.</p>
+                <a href="html/quiz.html" class="btn-quiz-cta">
+                    <span>Descubre Tu Rutina Perfecta</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Nosotros -->
+    <section id="nosotros" class="nosotros">
+        <div class="container">
+            <div class="nosotros-content">
+                <div class="nosotros-text">
+                    <h2>Sobre <span class="italic">Bella Catys</span></h2>
+                    <p>En Bella Catys nos dedicamos a ofrecer productos de belleza de la más alta calidad, seleccionados
+                        cuidadosamente para satisfacer las necesidades de nuestros clientes. Nuestra misión es ayudarte
+                        a realzar tu belleza natural con productos que cuidan tu piel.</p>
+                    <p>Nos centramos en cuidado personal y cosméticos de alta gama, siendo la marca de confianza para
+                        mujeres y hombres que buscan calidad y resultados excepcionales en sus rutinas de belleza y
+                        bienestar.</p>
+                    <div class="nosotros-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="cout"></span>
+                            <span class="stat-text">Productos disponibles</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nosotros-img">
+                    <img src="img/inicio/nosotros.jpeg" alt="Equipo Bella Catys">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="italic">Bella Catys</h3>
+                    <p>Tu destino para productos de belleza de calidad premium.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/catysbella?igsh=Z3ByY3ZuMGFhYXpi" class="social-link"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/share/1DJdMNhpar/" class="social-link"><i
+                                class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/50689523778" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces rápidos</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#productos">Productos</a></li>
+                        <li><a href="html/blog.html">Descubre</a></li>
+                        <li><a href="#nosotros">Sobre nosotros</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-envelope"></i> Bellacatys@outlook.es </p>
+                        <p><i class="fas fa-phone"></i> +506 8952 3778</p>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Bella Catys. Todos los derechos reservados. | Desarrollado por <strong><a
+                            href="https://mail.google.com/mail/?view=cm&fs=1&to=romero.dev07@gmail.com"
+                            class="dev">romero.dev07@gmail.com</a></strong></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal para detalles de producto -->
+    <div id="modal-producto" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <!-- Contenido del modal se llena con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/js/index.js"></script>
+</body>
+
+</html>
