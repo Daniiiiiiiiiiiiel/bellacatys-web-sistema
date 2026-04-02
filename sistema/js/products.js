@@ -147,7 +147,7 @@ function setupEventListeners() {
             nombre: document.getElementById('product-nombre').value,
             marca: document.getElementById('product-marca').value,
             categoria: document.getElementById('product-categoria').value,
-            descripcion: document.getElementById('product-descripcion').value,
+            descripcion: document.getElementById('product-descripcion').value.trim().replace(/\n/g, ' '),
             price: document.getElementById('product-precio').value,
             imagen: document.getElementById('product-imagen').value,
             caracteristicas
