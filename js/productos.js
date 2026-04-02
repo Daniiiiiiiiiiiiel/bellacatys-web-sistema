@@ -165,7 +165,7 @@ function renderizarProductos(productos, reiniciar = false) {
 
                     <div class="producto-descripcion">
                         <h3>Descripción</h3>
-                        <p>${producto.descripcion ? (producto.descripcion.length > 120 ? producto.descripcion.substring(0, 120) + '...' : producto.descripcion) : ''}</p>
+                        <p>${producto.descripcion ? (String(producto.descripcion).length > 120 ? String(producto.descripcion).substring(0, 120) + '...' : producto.descripcion) : 'Sin descripción'}</p>
                     </div>
                 </div>
                 
