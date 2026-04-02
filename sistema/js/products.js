@@ -28,7 +28,7 @@ function renderProducts(products) {
         return;
     }
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema-o1cv.vercel.app';
     tbody.innerHTML = products.map(p => `
         <tr>
             <td class="prod-img-cell" data-label="Imagen">
@@ -50,8 +50,17 @@ function renderProducts(products) {
 
 function setupEventListeners() {
     // Menu mobile
-    document.querySelector('.menu-toggle').addEventListener('click', () => {
-        document.querySelector('.sidebar').classList.toggle('open');
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+            sidebar.classList.remove('open');
+        }
     });
 
     // Search and Filter
@@ -218,7 +227,7 @@ window.editProduct = (id) => {
     document.getElementById('product-descripcion').value = p.descripcion;
     document.getElementById('product-imagen').value = p.imagen;
 
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys.vercel.app';
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3002' : 'https://bellacatys-web-sistema-o1cv.vercel.app';
     const imgSrc = p.imagen ? (p.imagen.startsWith('/') ? baseUrl + p.imagen : p.imagen) : '';
 
     if (imgSrc) {
