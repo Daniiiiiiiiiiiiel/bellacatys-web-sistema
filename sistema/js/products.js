@@ -153,12 +153,12 @@ function renderizarProductos(productos, reiniciar = false) {
             <div class="producto-info-detalle" style="min-width: 0; overflow: hidden;">
                 <div>
                     <span class="producto-categoria">${nombreCategoria}</span>
-                    <div class="producto-flex" style="display:flex;justify-content: space-between; margin-top: 1rem;">
-                        <div style="margin-top: -1rem; min-width: 0;">
+                    <div class="producto-header-flex">
+                        <div class="producto-identidad">
                             <span class="producto-marca">${producto.marca || ''}</span>
-                            <h2 class="producto-titulo" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${producto.nombre}</h2>
+                            <h2 class="producto-titulo">${producto.nombre}</h2>
                         </div>
-                        <div>
+                        <div class="producto-precio-box">
                             <h1 class="producto-precio">₡${Number(producto.price).toLocaleString('es-CR')}</h1>
                         </div>
                     </div>
