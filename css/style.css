@@ -446,12 +446,15 @@ nav ul li a:hover::after {
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-width: 0;
 }
 
 .producto-info h3 {
     color: var(--color-verde-oscuro);
     margin-bottom: 0.8rem;
     font-size: 1.3rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .producto-desc {
@@ -460,6 +463,8 @@ nav ul li a:hover::after {
     font-size: 0.95rem;
     line-height: 1.5;
     flex: 1;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .producto-detalles {
@@ -966,6 +971,8 @@ footer {
     font-size: 2.2rem;
     margin-bottom: 0.5rem;
     color: white;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .precio-modal {
@@ -999,8 +1006,22 @@ footer {
 
 .modal-producto-info {
     flex: 2;
-    min-width: 300px;
+    min-width: 0;
     padding: 2rem;
+    max-height: 450px;
+    overflow-y: auto;
+}
+
+.modal-producto-info::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-producto-info::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 10px;
+}
+.modal-producto-info::-webkit-scrollbar-thumb {
+    background: var(--color-verde-claro); 
+    border-radius: 10px;
 }
 
 .modal-desc {
@@ -1008,6 +1029,13 @@ footer {
     line-height: 1.7;
     margin-bottom: 1.5rem;
     color: #555;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.modal-section p {
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .modal-details {
