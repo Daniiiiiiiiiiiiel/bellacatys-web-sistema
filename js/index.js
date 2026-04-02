@@ -401,7 +401,7 @@ function renderizarProductos(productos, reiniciar = false) {
 
                     <div class="producto-descripcion">
                         <h3>Descripción</h3>
-                        <p>${producto.descripcion}</p>
+                        <p>${producto.descripcion ? (producto.descripcion.length > 120 ? producto.descripcion.substring(0, 120) + '...' : producto.descripcion) : ''}</p>
                     </div>
                 </div>
                 
