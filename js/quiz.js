@@ -1,4 +1,18 @@
-import { productosDB } from './data.js';
+let productosDB = [];
+
+async function cargarProductos() {
+    try {
+        const res = await fetch('/api/productos');
+        if (!res.ok) throw new Error('Error al cargar productos');
+        productosDB = await res.json();
+    } catch (e) {
+        console.error('No se pudieron cargar productos desde la API:', e);
+        productosDB = [];
+    }
+}
+
+// Cargar productos al inicio
+cargarProductos();
 
 // Estado del Quiz
 let quizState = {
@@ -283,76 +297,99 @@ function generarResultados() {
 }
 
 function recomendarProductos(respuestas) {
-    const productos = [];
-    const tipoCabello = respuestas.tipoCabello;
-    const necesidad = respuestas.necesidadPrincipal;
-    const estado = respuestas.estadoCabello;
-    const tratamiento = respuestas.tratamientos;
+    if (!productosDB || productosDB.length === 0) return [];
 
-    // Productos para rizos
-    if (tipoCabello === 'rizado' || tipoCabello === 'crespo') {
-        // Gelatina para definición
-        if (necesidad === 'definicion') {
-            productos.push(productosDB.find(p => p.id === 1)); // Cachos Hair Jelly
-            productos.push(productosDB.find(p => p.id === 37)); // Gelatina + Creme para Pentear
-            productos.push(productosDB.find(p => p.id === 43)); // #TodeCacho Ativador
+    const tipoCabello = respuestas.tipoCabello; // 'liso', 'ondulado', 'rizado', 'crespo'
+    const necesidad = respuestas.necesidadPrincipal; // 'hidratacion', 'nutricion', 'definicion', 'fortalecimiento'
+    const estado = respuestas.estadoCabello; // 'sano', 'seco', 'danado', 'graso'
+    const tratamiento = respuestas.tratamientos; // 'natural', 'tenido', 'alisado', 'decolorado'
+
+    // Filtrar solo productos de la categoría 'cabello'
+    const productosCabello = productosDB.filter(p => p.categoria === 'cabello');
+
+    // Calcular puntaje para cada producto
+    const scoredProducts = productosCabello.map(producto => {
+        let score = 0;
+        const nombreLower = (producto.nombre || '').toLowerCase();
+        const marcaLower = (producto.marca || '').toLowerCase();
+        const descLower = (producto.descripcion || '').toLowerCase();
+        const caracteristicasStr = (producto.caracteristicas || []).join(' ').toLowerCase();
+        const fullText = `${nombreLower} ${marcaLower} ${descLower} ${caracteristicasStr}`;
+
+        // 1. Coincidencia por tipo de cabello
+        if (tipoCabello === 'rizado' || tipoCabello === 'crespo') {
+            if (fullText.includes('rizo') || fullText.includes('cacho') || fullText.includes('crespo') || fullText.includes('curly') || fullText.includes('todecacho') || fullText.includes('definición') || fullText.includes('definir')) {
+                score += 8;
+            }
+            if (fullText.includes('liso') || fullText.includes('lacio') || fullText.includes('alisado')) {
+                score -= 4; // Penalizar productos para liso
+            }
+        } else if (tipoCabello === 'liso' || tipoCabello === 'ondulado') {
+            if (fullText.includes('liso') || fullText.includes('lacio') || fullText.includes('ondulado') || fullText.includes('alacia')) {
+                score += 8;
+            }
+            if (fullText.includes('rizo') || fullText.includes('cacho') || fullText.includes('crespo') || fullText.includes('todecacho')) {
+                score -= 4; // Penalizar productos para rizos
+            }
         }
 
-        // Hidratación para rizos
-        if (necesidad === 'hidratacion' || estado === 'seco') {
-            productos.push(productosDB.find(p => p.id === 45)); // S.O.S Cachos - Ácido Hialurónico
-            productos.push(productosDB.find(p => p.id === 38)); // S.O.S Hidratação - Aceite de Oliva
-            productos.push(productosDB.find(p => p.id === 41)); // Hidra Babosa
-        }
-
-        // Reparación para rizos dañados
-        if (estado === 'danado') {
-            productos.push(productosDB.find(p => p.id === 44)); // S.O.S Cachos - Recarga de Queratina
-            productos.push(productosDB.find(p => p.id === 42)); // S.O.S Hidratação - Queratina e Colágeno
-            productos.push(productosDB.find(p => p.id === 40)); // S.O.S Cachos - Óleo de Rícino e Queratina
-        }
-    }
-
-    // Productos para cabello liso/ondulado
-    if (tipoCabello === 'liso' || tipoCabello === 'ondulado') {
+        // 2. Coincidencia por necesidad principal
         if (necesidad === 'hidratacion') {
-            productos.push(productosDB.find(p => p.id === 4)); // Óleo de Coco
-            productos.push(productosDB.find(p => p.id === 50)); // Kit Hidra Ceramidas
+            if (fullText.includes('hidra') || fullText.includes('agua') || fullText.includes('humect') || fullText.includes('aloe') || fullText.includes('babosa') || fullText.includes('hialurón')) {
+                score += 10;
+            }
+        } else if (necesidad === 'nutricion') {
+            if (fullText.includes('nutri') || fullText.includes('aceite') || fullText.includes('óleo') || fullText.includes('argán') || fullText.includes('coco') || fullText.includes('karité') || fullText.includes('oliva') || fullText.includes('ricino') || fullText.includes('mante')) {
+                score += 10;
+            }
+        } else if (necesidad === 'definicion') {
+            if (fullText.includes('defin') || fullText.includes('activador') || fullText.includes('gelatina') || fullText.includes('frizz') || fullText.includes('volumen') || fullText.includes('peinar')) {
+                score += 10;
+            }
+        } else if (necesidad === 'fortalecimiento') {
+            if (fullText.includes('fortalec') || fullText.includes('fuerza') || fullText.includes('biotina') || fullText.includes('tónico') || fullText.includes('crecimiento') || fullText.includes('caída') || fullText.includes('bomba')) {
+                score += 10;
+            }
         }
 
-        if (necesidad === 'nutricion') {
-            productos.push(productosDB.find(p => p.id === 2)); // Óleo de Argan
-            productos.push(productosDB.find(p => p.id === 28)); // Kit Óleo de Argan
+        // 3. Coincidencia por estado de cabello
+        if (estado === 'seco') {
+            if (fullText.includes('seco') || fullText.includes('resacado') || fullText.includes('deshidratado') || fullText.includes('nutri') || fullText.includes('óleo') || fullText.includes('aceite')) {
+                score += 6;
+            }
+        } else if (estado === 'danado') {
+            if (fullText.includes('dañado') || fullText.includes('quebrad') || fullText.includes('repara') || fullText.includes('reconstru') || fullText.includes('queratina') || fullText.includes('keratina') || fullText.includes('químic')) {
+                score += 6;
+            }
+        } else if (estado === 'graso') {
+            if (fullText.includes('graso') || fullText.includes('sebo') || fullText.includes('limpieza profunda') || fullText.includes('purifica') || fullText.includes('carbón') || fullText.includes('detox')) {
+                score += 6;
+            }
         }
 
-        if (necesidad === 'fortalecimiento') {
-            productos.push(productosDB.find(p => p.id === 8)); // Bomba de Biotina
-            productos.push(productosDB.find(p => p.id === 54)); // Tónico Fortalecedor Crescimiento
-            productos.push(productosDB.find(p => p.id === 75)); // Set Serum Nevada
+        // 4. Coincidencia por tratamientos químicos
+        if (tratamiento === 'tenido') {
+            if (fullText.includes('teñido') || fullText.includes('color') || fullText.includes('tinte') || fullText.includes('matiz') || fullText.includes('rubio') || fullText.includes('loiro') || fullText.includes('rojo') || fullText.includes('vermelho')) {
+                score += 5;
+            }
+        } else if (tratamiento === 'alisado') {
+            if (fullText.includes('alisado') || fullText.includes('keratina') || fullText.includes('queratina') || fullText.includes('post-alis')) {
+                score += 5;
+            }
+        } else if (tratamiento === 'decolorado') {
+            if (fullText.includes('decolorado') || fullText.includes('matizador') || fullText.includes('rubio') || fullText.includes('loiro') || fullText.includes('platina')) {
+                score += 5;
+            }
         }
-    }
 
-    // Productos para cabello dañado
-    if (estado === 'danado') {
-        productos.push(productosDB.find(p => p.id === 3)); // Keratina Vegetal
-        productos.push(productosDB.find(p => p.id === 11)); // Creme 3em1 Glicólico
-    }
+        return { producto, score };
+    });
 
-    // Productos para cabello teñido
-    if (tratamiento === 'tenido') {
-        productos.push(productosDB.find(p => p.id === 14)); // Divina Cor
-        productos.push(productosDB.find(p => p.id === 32)); // Vitamina C + Colágeno Vegetal
-    }
+    // Ordenar de mayor a menor puntaje
+    scoredProducts.sort((a, b) => b.score - a.score);
 
-    // Productos rubios  
-    // (Nota: solo si el usuario menciona que es rubio en futuras versiones)
-
-    // Productos multiuso versátiles
-    productos.push(productosDB.find(p => p.id === 5)); // 12 em 1
-    productos.push(productosDB.find(p => p.id === 6)); // Genetiqs
-
-    // Filtrar nulos y limitar a 6 productos
-    return productos.filter(p => p != null).slice(0, 6);
+    // Retornar los top 6 productos recomendados
+    return scoredProducts.slice(0, 6).map(item => item.producto);
 }
 
 function crearRutina(respuestas, productos) {
@@ -455,7 +492,7 @@ function renderizarResultados(perfil) {
             <div class="result-product-info">
                 <h4>${producto.nombre}</h4>
                 <p class="marca">${producto.marca}</p>
-                <p>${producto.descripcion.substring(0, 100)}...</p>
+                <p>${producto.descripcion ? producto.descripcion.substring(0, 100) + '...' : ''}</p>
             </div>
         `;
 

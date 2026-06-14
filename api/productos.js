@@ -1,31 +1,33 @@
 // api/productos.js – Endpoint público: GET /api/productos
-// Sirve todos los productos de la base de datos (sin autenticación)
+// Usa Supabase JS (HTTPS) en lugar de Prisma directo para evitar bloqueo de puerto 5432
 
-import { PrismaClient } from '@prisma/client';
+import { createClient } from '@supabase/supabase-js';
 
-const prisma = new PrismaClient();
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
-  // Solo GET permitido
   if (req.method !== 'GET') {
     return res.status(405).json({ error: 'Método no permitido' });
   }
 
-  // Headers CORS para que la web pública pueda consumir la API
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET');
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
 
   try {
-    const productos = await prisma.producto.findMany({
-      orderBy: { id: 'asc' },
-    });
+    const { data: productos, error } = await supabase
+      .from('Producto')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) throw error;
 
     return res.status(200).json(productos);
   } catch (error) {
     console.error('Error al obtener productos:', error);
-    return res.status(500).json({ error: 'Error interno del servidor' });
-  } finally {
-    await prisma.$disconnect();
+    return res.status(500).json({ error: 'Error interno del servidor', detail: error.message });
   }
 }

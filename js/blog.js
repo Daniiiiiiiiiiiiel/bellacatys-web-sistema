@@ -1,4 +1,15 @@
-import { productosDB } from './data.js';
+let productosDB = [];
+
+async function cargarProductos() {
+    try {
+        const res = await fetch('/api/productos');
+        if (!res.ok) throw new Error('Error al cargar productos');
+        productosDB = await res.json();
+    } catch (e) {
+        console.error('No se pudieron cargar productos desde la API:', e);
+        productosDB = [];
+    }
+}
 
 // ========================================
 // LOADING SCREEN LOGIC
@@ -26,7 +37,7 @@ const articulosDB = [
         resumen: "Descubre los pasos esenciales para una rutina de noche que transformará tu piel mientras duermes. Incluye tips de productos y técnicas de aplicación.",
         lectura: "5 min",
         imagen: "../blog/rutina-noche.jpg",
-        productosRelacionados: [1, 2, 5],
+        keywords: ["retinol", "hialurónico", "ceramidas", "limpiador", "nocturna", "serum", "crema", "hidratación profunda"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">La noche es el momento mágico donde tu piel se regenera. Aprovechar estas horas con los productos adecuados puede marcar la diferencia entre una piel apagada y un despertar radiante.</p>
@@ -71,7 +82,7 @@ const articulosDB = [
         resumen: "Todo lo que necesitas saber sobre el antioxidante más poderoso: cómo usarlo, cuándo aplicarlo y con qué combinarlo para obtener el máximo brillo.",
         lectura: "7 min",
         imagen: "../blog/vitamina-c.jpg",
-        productosRelacionados: [3, 4, 6],
+        keywords: ["vitamina c", "antioxidante", "iluminar", "manchas", "serum", "brillo", "luminosidad"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">La Vitamina C es el estándar de oro para iluminar la piel y combatir el envejecimiento. Pero, ¿sabes realmente cómo sacarle el máximo partido sin irritar tu piel?</p>
@@ -112,7 +123,7 @@ const articulosDB = [
         resumen: "Aprende a estructurar tu calendario de mascarillas: Hidratación, Nutrición y Reconstrucción. La clave para salvar cualquier cabello dañado.",
         lectura: "6 min",
         imagen: "../blog/cronograma-capilar.png",
-        productosRelacionados: [1, 2, 3],
+        keywords: ["mascarilla", "hidratación", "nutrición", "reconstrucción", "dañado", "keratina", "proteína", "reparación"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">El cronograma capilar es una agenda de cuidados organizada para reponer todo lo que tu cabello pierde diariamente. Si sientes tu pelo opaco, quebradizo o sin vida, este es el sistema que necesitas.</p>
@@ -151,7 +162,7 @@ const articulosDB = [
         resumen: "Desmitificamos la famosa rutina coreana. ¿Realmente necesitas 10 pasos? Te contamos cuáles son imprescindibles y cuáles opcionales.",
         lectura: "8 min",
         imagen: "../blog/korean-skincare.png",
-        productosRelacionados: [4, 5, 6],
+        keywords: ["coreano", "esencia", "tónico", "mascarilla", "serum", "niacinamida", "centella"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">La belleza coreana (K-Beauty) ha revolucionado el mundo con su enfoque en la prevención y la hidratación. La famosa rutina de 10 pasos puede sonar intimidante, pero se trata de capas ligeras y respeto por la piel.</p>
@@ -189,7 +200,7 @@ const articulosDB = [
         resumen: "Comparativa definitiva entre los dos gigantes del cuidado facial. Aprende sus diferencias, beneficios y si puedes usarlos juntos.",
         lectura: "5 min",
         imagen: "../blog/ingredientes-activos.png",
-        productosRelacionados: [2, 5, 1],
+        keywords: ["ácido hialurónico", "retinol", "antiedad", "hidratación", "arrugas", "serum"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">A menudo se confunden, pero tienen misiones muy diferentes. El Ácido Hialurónico es el vaso de agua que tu piel bebe; el Retinol es el entrenador personal que la pone a trabajar.</p>
@@ -225,7 +236,7 @@ const articulosDB = [
         resumen: "¿Vale la pena gastar en mascarillas de salón o el aguacate de tu cocina es suficiente? Analizamos pros y contras de cada opción.",
         lectura: "4 min",
         imagen: "../blog/mascarillas.png",
-        productosRelacionados: [3, 1, 4],
+        keywords: ["mascarilla", "tratamiento", "reparación", "profesional", "keratina", "colágeno"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">Todos hemos probado alguna vez una mezcla de huevo y aceite en el pelo. Pero, ¿realmente funcionan los remedios de la abuela frente a la tecnología cosmética actual?</p>
@@ -256,7 +267,7 @@ const articulosDB = [
         resumen: "No basta con aplicarlo, hay que hacerlo bien. Descubre los 5 errores más comunes que reducen la efectividad de tu SPF.",
         lectura: "5 min",
         imagen: "../blog/sunscreen.png",
-        productosRelacionados: [5, 6, 2],
+        keywords: ["protector solar", "spf", "sunscreen", "solar", "rostro", "manchas"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">El protector solar es el paso más importante de cualquier rutina. Sin él, el resto de tus productos no sirven de mucho. Pero la mayoría de nosotros no lo usa correctamente.</p>
@@ -285,7 +296,7 @@ const articulosDB = [
         resumen: "Argán, Coco, Jojoba... Hay un aceite para cada tipo de pelo. Encuentra tu match perfecto y aprende a usarlo sin engrasar.",
         lectura: "6 min",
         imagen: "../blog/hair-oils.png",
-        productosRelacionados: [2, 4, 1],
+        keywords: ["aceite", "argán", "coco", "jojoba", "ricino", "sérum", "puntas"],
         contenido: `
             <div class="articulo-texto">
                 <p class="intro-text">Los aceites son oro líquido para el cabello, pero usar el incorrecto puede dejarte con aspecto sucio o pesado. La clave es el peso molecular y la afinidad con tu tipo de pelo.</p>
@@ -381,7 +392,8 @@ let categoriaActual = 'todos';
 let busquedaActual = '';
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await cargarProductos();
     renderizarArticulos();
     setupEventListeners();
 });
@@ -456,8 +468,34 @@ window.abrirModalFullscreen = function (id) {
     const articulo = articulosDB.find(a => a.id === id);
     if (!articulo) return;
 
-    // Buscar productos relacionados
-    const productosRecomendados = productosDB.filter(p => articulo.productosRelacionados.includes(p.id));
+    // Buscar productos recomendados dinámicamente según palabras clave
+    let productosRecomendados = [];
+    if (articulo.keywords && productosDB && productosDB.length > 0) {
+        const scoredProducts = productosDB.map(prod => {
+            let score = 0;
+            const searchText = (prod.nombre + ' ' + (prod.descripcion || '') + ' ' + (prod.categoria || '') + ' ' + (prod.caracteristicas ? prod.caracteristicas.join(' ') : '')).toLowerCase();
+            articulo.keywords.forEach(kw => {
+                if (searchText.includes(kw.toLowerCase())) {
+                    score += 1;
+                }
+            });
+            return { producto: prod, score: score };
+        });
+        
+        // Ordenar por score descendente
+        scoredProducts.sort((a, b) => b.score - a.score);
+        
+        // Tomar los 3 mejores con score > 0
+        productosRecomendados = scoredProducts.filter(p => p.score > 0).slice(0, 3).map(p => p.producto);
+        
+        // Rellenar si no hay suficientes
+        if (productosRecomendados.length < 3) {
+            const extra = productosDB.filter(p => !productosRecomendados.includes(p)).slice(0, 3 - productosRecomendados.length);
+            productosRecomendados = [...productosRecomendados, ...extra];
+        }
+    } else {
+        productosRecomendados = productosDB.slice(0, 3);
+    }
 
     let htmlProductos = '';
     if (productosRecomendados.length > 0) {
