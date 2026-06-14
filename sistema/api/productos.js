@@ -1,7 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { createClient } from '@supabase/supabase-js';
 import { verifyAuth } from "./_auth.js";
 
-const prisma = new PrismaClient();
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
 export default async function handler(req, res) {
   const auth = await verifyAuth(req);
@@ -9,7 +12,12 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const productos = await prisma.producto.findMany({ orderBy: { id: "asc" } });
+      const { data: productos, error } = await supabase
+        .from('Producto')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) throw error;
       return res.status(200).json(productos);
     }
     
@@ -19,8 +27,9 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Campos requeridos: nombre, categoria, price" });
       }
       
-      const nuevo = await prisma.producto.create({ 
-        data: { 
+      const { data: nuevo, error } = await supabase
+        .from('Producto')
+        .insert([{ 
           nombre, 
           marca: marca || "", 
           categoria, 
@@ -28,16 +37,17 @@ export default async function handler(req, res) {
           caracteristicas: caracteristicas || [], 
           imagen: imagen || "", 
           price 
-        } 
-      });
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
       return res.status(201).json(nuevo);
     }
     
     return res.status(405).end();
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: error.message || "Error interno de Prisma" });
-  } finally { 
-    await prisma.$disconnect(); 
+    return res.status(500).json({ error: error.message || "Error interno de Supabase" });
   }
 }
