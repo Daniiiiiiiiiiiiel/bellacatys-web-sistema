@@ -27,20 +27,23 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Campos requeridos: nombre, categoria, price" });
       }
       
+      const ahora = new Date().toISOString();
+
       const { data: nuevo, error } = await supabase
         .from('Producto')
         .insert([{ 
-          nombre, 
-          marca: marca || "", 
-          categoria, 
-          descripcion: descripcion || "", 
-          caracteristicas: caracteristicas || [], 
-          imagen: imagen || "", 
-          price 
+          nombre,
+          marca: marca || "",
+          categoria,
+          descripcion: descripcion || "",
+          caracteristicas: caracteristicas || [],
+          imagen: imagen || "",
+          price,
+          createdAt: ahora,
+          updatedAt: ahora
         }])
         .select()
         .single();
-
       if (error) throw error;
       return res.status(201).json(nuevo);
     }
