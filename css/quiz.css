@@ -641,11 +641,11 @@
 }
 
 .quiz-logo {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
     margin-left: -1rem;
     display: flex;
     align-items: center;
-    height: 100px;
+    height: 80px;
 }
 
 .quiz-logo img {
